@@ -1,0 +1,486 @@
+{
+	"info": {
+		"_postman_id": "equipment-management-api",
+		"name": "Equipment Management API",
+		"description": "API cho hệ thống quản lý mượn thiết bị trường học",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Health Check",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/health",
+					"host": ["{{base_url}}"],
+					"path": ["health"]
+				}
+			}
+		},
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "Register Admin",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"fullName\": \"Admin Test\",\n  \"email\": \"admin@test.com\",\n  \"password\": \"123456\",\n  \"role\": \"admin\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/auth/register",
+							"host": ["{{base_url}}"],
+							"path": ["api", "auth", "register"]
+						}
+					}
+				},
+				{
+					"name": "Register Student",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"fullName\": \"Nguyễn Văn A\",\n  \"email\": \"student@test.com\",\n  \"password\": \"123456\",\n  \"studentId\": \"SV001\",\n  \"phone\": \"0123456789\",\n  \"faculty\": \"Công nghệ thông tin\",\n  \"class\": \"CNTT01\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/auth/register",
+							"host": ["{{base_url}}"],
+							"path": ["api", "auth", "register"]
+						}
+					}
+				},
+				{
+					"name": "Login Admin",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"admin@test.com\",\n  \"password\": \"123456\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/auth/login",
+							"host": ["{{base_url}}"],
+							"path": ["api", "auth", "login"]
+						}
+					}
+				},
+				{
+					"name": "Login Student",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"student@test.com\",\n  \"password\": \"123456\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/auth/login",
+							"host": ["{{base_url}}"],
+							"path": ["api", "auth", "login"]
+						}
+					}
+				},
+				{
+					"name": "Get Profile",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{admin_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/auth/profile",
+							"host": ["{{base_url}}"],
+							"path": ["api", "auth", "profile"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Equipment Management",
+			"item": [
+				{
+					"name": "Get All Equipment",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/equipment",
+							"host": ["{{base_url}}"],
+							"path": ["api", "equipment"]
+						}
+					}
+				},
+				{
+					"name": "Get Available Equipment",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/equipment/available",
+							"host": ["{{base_url}}"],
+							"path": ["api", "equipment", "available"]
+						}
+					}
+				},
+				{
+					"name": "Create Equipment (Admin)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{admin_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Laptop Dell Inspiron 15\",\n  \"code\": \"LAPTOP001\",\n  \"category\": \"electronics\",\n  \"description\": \"Laptop phục vụ học tập và nghiên cứu\",\n  \"specifications\": \"CPU: Intel i5, RAM: 8GB, Storage: 256GB SSD\",\n  \"totalQuantity\": 10,\n  \"availableQuantity\": 10,\n  \"condition\": \"good\",\n  \"location\": {\n    \"building\": \"A\",\n    \"floor\": \"2\",\n    \"room\": \"A201\"\n  },\n  \"purchaseDate\": \"2023-01-15\",\n  \"purchasePrice\": 15000000,\n  \"warrantyExpiry\": \"2026-01-15\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/equipment",
+							"host": ["{{base_url}}"],
+							"path": ["api", "equipment"]
+						}
+					}
+				},
+				{
+					"name": "Get Equipment by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/equipment/:id",
+							"host": ["{{base_url}}"],
+							"path": ["api", "equipment", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "equipment_id_here"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Update Equipment - Change Name Only",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{admin_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Laptop Dell Inspiron 15 - Updated\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/equipment/:id",
+							"host": ["{{base_url}}"],
+							"path": ["api", "equipment", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "equipment_id_here"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Update Equipment - Change Quantity",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{admin_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"availableQuantity\": 8,\n  \"notes\": \"2 thiết bị đang được sửa chữa\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/equipment/:id",
+							"host": ["{{base_url}}"],
+							"path": ["api", "equipment", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "equipment_id_here"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Update Equipment - Change Location",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{admin_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"location\": {\n    \"building\": \"B\",\n    \"floor\": \"3\",\n    \"room\": \"B301\"\n  }\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/equipment/:id",
+							"host": ["{{base_url}}"],
+							"path": ["api", "equipment", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "equipment_id_here"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Update Equipment - Multiple Fields",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{admin_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"condition\": \"fair\",\n  \"description\": \"Laptop có một số dấu hiệu sử dụng nhưng vẫn hoạt động tốt\",\n  \"notes\": \"Đã sử dụng 2 năm, cần bảo trì định kỳ\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/equipment/:id",
+							"host": ["{{base_url}}"],
+							"path": ["api", "equipment", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "equipment_id_here"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Delete Equipment (Admin)",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{admin_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/equipment/:id",
+							"host": ["{{base_url}}"],
+							"path": ["api", "equipment", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "equipment_id_here"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Equipment Stats (Admin)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{admin_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/equipment/stats",
+							"host": ["{{base_url}}"],
+							"path": ["api", "equipment", "stats"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Search & Filter",
+			"item": [
+				{
+					"name": "Search Equipment",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/equipment?keyword=laptop&category=electronics&page=1&limit=5",
+							"host": ["{{base_url}}"],
+							"path": ["api", "equipment"],
+							"query": [
+								{
+									"key": "keyword",
+									"value": "laptop"
+								},
+								{
+									"key": "category",
+									"value": "electronics"
+								},
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "5"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Filter by Condition",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/equipment?condition=good&available=true",
+							"host": ["{{base_url}}"],
+							"path": ["api", "equipment"],
+							"query": [
+								{
+									"key": "condition",
+									"value": "good"
+								},
+								{
+									"key": "available",
+									"value": "true"
+								}
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Error Testing",
+			"item": [
+				{
+					"name": "Test Validation Error",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{admin_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"A\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/equipment",
+							"host": ["{{base_url}}"],
+							"path": ["api", "equipment"]
+						}
+					}
+				},
+				{
+					"name": "Test Unauthorized Access",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Test Equipment\",\n  \"code\": \"TEST001\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/equipment",
+							"host": ["{{base_url}}"],
+							"path": ["api", "equipment"]
+						}
+					}
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:5000"
+		},
+		{
+			"key": "admin_token",
+			"value": ""
+		},
+		{
+			"key": "student_token",
+			"value": ""
+		}
+	]
+} 
