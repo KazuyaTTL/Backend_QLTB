@@ -418,6 +418,202 @@
 			]
 		},
 		{
+			"name": "Borrow Request Workflow",
+			"item": [
+				{
+					"name": "Get Request Stats",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{admin_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/requests/stats",
+							"host": ["{{base_url}}"],
+							"path": ["api", "requests", "stats"]
+						}
+					}
+				},
+				{
+					"name": "Create Borrow Request (Student)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{student_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"equipments\": [\n    {\n      \"equipment\": \"EQUIPMENT_ID_HERE\",\n      \"quantity\": 1\n    }\n  ],\n  \"borrowDate\": \"2025-06-04T00:00:00Z\",\n  \"expectedReturnDate\": \"2025-06-10T00:00:00Z\",\n  \"purpose\": \"Sử dụng cho dự án nhóm môn Lập trình web. Cần laptop để code và demo sản phẩm.\",\n  \"notes\": \"Sinh viên cam kết sử dụng cẩn thận và trả đúng hạn.\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/requests",
+							"host": ["{{base_url}}"],
+							"path": ["api", "requests"]
+						}
+					}
+				},
+				{
+					"name": "Get All Requests (Admin)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{admin_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/requests",
+							"host": ["{{base_url}}"],
+							"path": ["api", "requests"]
+						}
+					}
+				},
+				{
+					"name": "Get My Requests (Student)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{student_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/requests",
+							"host": ["{{base_url}}"],
+							"path": ["api", "requests"]
+						}
+					}
+				},
+				{
+					"name": "Get Pending Requests",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{admin_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/requests?status=pending",
+							"host": ["{{base_url}}"],
+							"path": ["api", "requests"],
+							"query": [
+								{
+									"key": "status",
+									"value": "pending"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Approve Request (Admin)",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{admin_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"notes\": \"Yêu cầu được duyệt. Sinh viên có thể đến nhận thiết bị tại phòng A201.\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/requests/REQUEST_ID_HERE/approve",
+							"host": ["{{base_url}}"],
+							"path": ["api", "requests", "REQUEST_ID_HERE", "approve"]
+						}
+					}
+				},
+				{
+					"name": "Reject Request (Admin)",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{admin_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"reason\": \"Thiết bị hiện tại không có sẵn. Vui lòng tạo yêu cầu khác hoặc chờ thiết bị được trả.\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/requests/REQUEST_ID_HERE/reject",
+							"host": ["{{base_url}}"],
+							"path": ["api", "requests", "REQUEST_ID_HERE", "reject"]
+						}
+					}
+				},
+				{
+					"name": "Borrow Equipment (Admin)",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{admin_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/requests/REQUEST_ID_HERE/borrow",
+							"host": ["{{base_url}}"],
+							"path": ["api", "requests", "REQUEST_ID_HERE", "borrow"]
+						}
+					}
+				},
+				{
+					"name": "Return Equipment (Admin)",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{admin_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"notes\": \"Thiết bị được trả trong tình trạng tốt. Không có hư hỏng.\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/requests/REQUEST_ID_HERE/return",
+							"host": ["{{base_url}}"],
+							"path": ["api", "requests", "REQUEST_ID_HERE", "return"]
+						}
+					}
+				}
+			]
+		},
+		{
 			"name": "Error Testing",
 			"item": [
 				{
@@ -463,6 +659,112 @@
 							"raw": "{{base_url}}/api/equipment",
 							"host": ["{{base_url}}"],
 							"path": ["api", "equipment"]
+						}
+					}
+				},
+				{
+					"name": "Filter - Invalid Category (400 Error)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/equipment?category=invalid_category",
+							"host": ["{{base_url}}"],
+							"path": ["api", "equipment"],
+							"query": [
+								{
+									"key": "category",
+									"value": "invalid_category"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Filter - Invalid Condition (400 Error)",
+					"request": {
+						"method": "GET", 
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/equipment?condition=broken",
+							"host": ["{{base_url}}"],
+							"path": ["api", "equipment"],
+							"query": [
+								{
+									"key": "condition",
+									"value": "broken"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Filter - Invalid Available Parameter (400 Error)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/equipment?available=yes",
+							"host": ["{{base_url}}"],
+							"path": ["api", "equipment"],
+							"query": [
+								{
+									"key": "available",
+									"value": "yes"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Filter - Invalid Sort Field (400 Error)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/equipment?sortBy=invalidField",
+							"host": ["{{base_url}}"],
+							"path": ["api", "equipment"],
+							"query": [
+								{
+									"key": "sortBy",
+									"value": "invalidField"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Filter - Valid Multiple Criteria",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/equipment?category=electronics&condition=good&available=true&sortBy=name&sortOrder=asc",
+							"host": ["{{base_url}}"],
+							"path": ["api", "equipment"],
+							"query": [
+								{
+									"key": "category",
+									"value": "electronics"
+								},
+								{
+									"key": "condition",
+									"value": "good"
+								},
+								{
+									"key": "available",
+									"value": "true"
+								},
+								{
+									"key": "sortBy",
+									"value": "name"
+								},
+								{
+									"key": "sortOrder",
+									"value": "asc"
+								}
+							]
 						}
 					}
 				}

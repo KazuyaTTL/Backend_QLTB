@@ -16,6 +16,53 @@ const getEquipments = async (req, res) => {
       sortOrder = 'desc'
     } = req.query;
 
+    // ✅ VALIDATION: Valid enum values
+    const validCategories = ['electronics', 'furniture', 'sports', 'laboratory', 'audio_visual', 'other'];
+    const validConditions = ['new', 'good', 'fair', 'poor', 'damaged'];
+    const validSortFields = ['name', 'code', 'category', 'condition', 'createdAt', 'updatedAt'];
+    
+    // Validate category
+    if (category && !validCategories.includes(category)) {
+      return res.status(400).json({
+        status: 'error',
+        message: `Invalid category. Valid values: ${validCategories.join(', ')}`,
+        validCategories
+      });
+    }
+    
+    // Validate condition  
+    if (condition && !validConditions.includes(condition)) {
+      return res.status(400).json({
+        status: 'error',
+        message: `Invalid condition. Valid values: ${validConditions.join(', ')}`,
+        validConditions
+      });
+    }
+    
+    // Validate available parameter
+    if (available && !['true', 'false'].includes(available)) {
+      return res.status(400).json({
+        status: 'error',
+        message: 'Invalid available parameter. Use "true" or "false"'
+      });
+    }
+    
+    // Validate sort parameters
+    if (!validSortFields.includes(sortBy)) {
+      return res.status(400).json({
+        status: 'error', 
+        message: `Invalid sortBy field. Valid values: ${validSortFields.join(', ')}`,
+        validSortFields
+      });
+    }
+    
+    if (!['asc', 'desc'].includes(sortOrder)) {
+      return res.status(400).json({
+        status: 'error',
+        message: 'Invalid sortOrder. Use "asc" or "desc"'
+      });
+    }
+
     // Build filter object
     const filter = { isActive: true };
 
@@ -277,6 +324,35 @@ const getAvailableEquipments = async (req, res) => {
       sortBy = 'name',
       sortOrder = 'asc'
     } = req.query;
+
+    // ✅ VALIDATION: Valid enum values  
+    const validCategories = ['electronics', 'furniture', 'sports', 'laboratory', 'audio_visual', 'other'];
+    const validSortFields = ['name', 'code', 'category', 'condition', 'availableQuantity'];
+    
+    // Validate category
+    if (category && !validCategories.includes(category)) {
+      return res.status(400).json({
+        status: 'error',
+        message: `Invalid category. Valid values: ${validCategories.join(', ')}`,
+        validCategories
+      });
+    }
+    
+    // Validate sort parameters
+    if (!validSortFields.includes(sortBy)) {
+      return res.status(400).json({
+        status: 'error',
+        message: `Invalid sortBy field. Valid values: ${validSortFields.join(', ')}`,
+        validSortFields
+      });
+    }
+    
+    if (!['asc', 'desc'].includes(sortOrder)) {
+      return res.status(400).json({
+        status: 'error',
+        message: 'Invalid sortOrder. Use "asc" or "desc"'
+      });
+    }
 
     // Filter chỉ thiết bị có sẵn
     const filter = {
