@@ -463,7 +463,7 @@
 					}
 				},
 				{
-					"name": "Get All Requests (Admin)",
+					"name": "Get All Requests (Admin) / My Requests (Student)",
 					"request": {
 						"method": "GET",
 						"header": [
@@ -497,7 +497,7 @@
 					}
 				},
 				{
-					"name": "Get Pending Requests",
+					"name": "Get Pending Requests (Admin sees all / Student sees own)",
 					"request": {
 						"method": "GET",
 						"header": [
