@@ -4,7 +4,10 @@ const { generateTokenForUser } = require('../utils/jwt');
 // Đăng ký tài khoản
 const register = async (req, res) => {
   try {
-    const { fullName, email, password, studentId, phone, faculty, class: className, role = 'student' } = req.body;
+    const { fullName, email, password, studentId, phone, faculty, class: className } = req.body;
+
+    // CHỈ CHO PHÉP ĐĂNG KÝ TÀI KHOẢN SINH VIÊN
+    const role = 'student';
 
     // Kiểm tra email đã tồn tại
     const existingUser = await User.findOne({ email });
@@ -15,7 +18,7 @@ const register = async (req, res) => {
       });
     }
 
-    // Kiểm tra studentId đã tồn tại (nếu có)
+    // Kiểm tra studentId đã tồn tại (nếu có studentId)
     if (studentId) {
       const existingStudent = await User.findOne({ studentId });
       if (existingStudent) {
@@ -26,27 +29,19 @@ const register = async (req, res) => {
       }
     }
 
-    // Tạo user mới
+    // Tạo user mới (chỉ sinh viên)
     const userData = {
       fullName,
       email,
       password,
-      role
+      role: 'student'
     };
 
-    // Thêm thông tin sinh viên nếu role là student
-    if (role === 'student') {
-      if (!studentId) {
-        return res.status(400).json({
-          status: 'error',
-          message: 'Mã sinh viên là bắt buộc cho tài khoản sinh viên'
-        });
-      }
-      userData.studentId = studentId;
-      userData.phone = phone;
-      userData.faculty = faculty;
-      userData.class = className;
-    }
+    // Thêm thông tin sinh viên nếu có
+    if (studentId) userData.studentId = studentId;
+    if (phone) userData.phone = phone;
+    if (faculty) userData.faculty = faculty;
+    if (className) userData.class = className;
 
     const user = await User.create(userData);
 
@@ -80,10 +75,20 @@ const login = async (req, res) => {
   try {
     const { email, password } = req.body;
 
+    // 🔍 DEBUG LOGS
+    console.log('🚀 === LOGIN DEBUG ===');
+    console.log('📧 Email nhận được:', email);
+    console.log('🔑 Password nhận được:', password);
+    console.log('📦 Full body:', JSON.stringify(req.body, null, 2));
+    console.log('📋 Headers:', JSON.stringify(req.headers, null, 2));
+
     // Tìm user và include password để so sánh
     const user = await User.findOne({ email }).select('+password');
     
+    console.log('👤 User tìm được:', user ? `${user.email} (${user._id})` : 'null');
+    
     if (!user) {
+      console.log('❌ Không tìm thấy user với email:', email);
       return res.status(401).json({
         status: 'error',
         message: 'Email hoặc mật khẩu không đúng'
@@ -92,6 +97,7 @@ const login = async (req, res) => {
 
     // Kiểm tra tài khoản có hoạt động không
     if (!user.isActive) {
+      console.log('❌ Tài khoản bị vô hiệu hóa');
       return res.status(401).json({
         status: 'error',
         message: 'Tài khoản đã bị vô hiệu hóa'
@@ -99,13 +105,19 @@ const login = async (req, res) => {
     }
 
     // Kiểm tra mật khẩu
+    console.log('🔐 Bắt đầu kiểm tra password...');
     const isPasswordMatch = await user.matchPassword(password);
+    console.log('🔐 Kết quả so sánh password:', isPasswordMatch);
+    
     if (!isPasswordMatch) {
+      console.log('❌ Mật khẩu không khớp');
       return res.status(401).json({
         status: 'error',
         message: 'Email hoặc mật khẩu không đúng'
       });
     }
+
+    console.log('✅ Đăng nhập thành công!');
 
     // Cập nhật thời gian đăng nhập cuối
     await user.updateLastLogin();
@@ -291,6 +303,68 @@ const logout = (req, res) => {
   });
 };
 
+// Tạo tài khoản Admin (chỉ Admin hiện tại mới được phép)
+const createAdminAccount = async (req, res) => {
+  try {
+    // Kiểm tra người gọi API phải là admin
+    if (req.user.role !== 'admin') {
+      return res.status(403).json({
+        status: 'error',
+        message: 'Chỉ Admin mới có quyền tạo tài khoản Admin'
+      });
+    }
+
+    const { fullName, email, password } = req.body;
+
+    // Validation
+    if (!fullName || !email || !password) {
+      return res.status(400).json({
+        status: 'error',
+        message: 'Vui lòng nhập đầy đủ thông tin: Họ tên, Email, Mật khẩu'
+      });
+    }
+
+    // Kiểm tra email đã tồn tại
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(400).json({
+        status: 'error',
+        message: 'Email đã được sử dụng'
+      });
+    }
+
+    // Tạo admin mới
+    const adminData = {
+      fullName,
+      email,
+      password,
+      role: 'admin'
+    };
+
+    const newAdmin = await User.create(adminData);
+
+    // Remove password from response
+    const adminResponse = newAdmin.toObject();
+    delete adminResponse.password;
+
+    res.status(201).json({
+      status: 'success',
+      message: 'Tạo tài khoản Admin thành công',
+      data: {
+        admin: adminResponse,
+        createdBy: req.user.fullName
+      }
+    });
+
+  } catch (error) {
+    console.error('Create admin error:', error);
+    res.status(500).json({
+      status: 'error',
+      message: 'Lỗi server khi tạo tài khoản Admin'
+    });
+  }
+};
+
 module.exports = {
   register,
   login,
@@ -298,5 +372,6 @@ module.exports = {
   updateProfile,
   changePassword,
   refreshToken,
-  logout
+  logout,
+  createAdminAccount
 }; 

@@ -9,11 +9,12 @@ const {
   updateProfile,
   changePassword,
   refreshToken,
-  logout
+  logout,
+  createAdminAccount
 } = require('../controllers/authController');
 
 // Import middleware
-const { authenticateToken } = require('../middleware/auth');
+const { authenticateToken, requireAdmin } = require('../middleware/auth');
 
 // Import validation
 const {
@@ -75,5 +76,13 @@ router.post('/refresh', authenticateToken, refreshToken);
  * @access  Private
  */
 router.post('/logout', authenticateToken, logout);
+
+/**
+ * @route   POST /api/auth/create-admin
+ * @desc    Tạo tài khoản Admin mới (chỉ Admin hiện tại)
+ * @access  Private - Admin only
+ * @body    { fullName, email, password }
+ */
+router.post('/create-admin', authenticateToken, requireAdmin, createAdminAccount);
 
 module.exports = router; 

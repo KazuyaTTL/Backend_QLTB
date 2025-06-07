@@ -2,7 +2,7 @@ const BorrowRequest = require('../models/BorrowRequest');
 const User = require('../models/User');
 const Equipment = require('../models/Equipment');
 
-// 📋 Lấy danh sách requests (có filter cơ bản)
+// Lấy danh sách requests (có filter cơ bản)
 const getBorrowRequests = async (req, res) => {
   try {
     const { status, page = 1, limit = 10 } = req.query;
@@ -47,7 +47,7 @@ const getBorrowRequests = async (req, res) => {
   }
 };
 
-// ✏️ Tạo yêu cầu mượn mới (đơn giản)
+// Tạo yêu cầu mượn mới (đơn giản)
 const createBorrowRequest = async (req, res) => {
   try {
     const { equipments, borrowDate, expectedReturnDate, purpose, notes } = req.body;
@@ -77,7 +77,16 @@ const createBorrowRequest = async (req, res) => {
 
     // Kiểm tra equipment tồn tại và đủ số lượng
     for (const item of equipments) {
+      console.log('🔍 Checking equipment item:', item);
+      
       const equipment = await Equipment.findById(item.equipment);
+      console.log('📦 Found equipment:', equipment ? {
+        id: equipment._id,
+        name: equipment.name,
+        availableQuantity: equipment.availableQuantity,
+        borrowedQuantity: equipment.borrowedQuantity
+      } : 'NOT FOUND');
+      
       if (!equipment) {
         return res.status(404).json({
           success: false,
@@ -85,15 +94,17 @@ const createBorrowRequest = async (req, res) => {
         });
       }
 
-      if (equipment.quantity.available < item.quantity) {
+      if (equipment.availableQuantity < item.quantity) {
         return res.status(400).json({
           success: false,
-          message: `Thiết bị "${equipment.name}" không đủ số lượng. Có sẵn: ${equipment.quantity.available}, yêu cầu: ${item.quantity}`
+          message: `Thiết bị "${equipment.name}" không đủ số lượng. Có sẵn: ${equipment.availableQuantity}, yêu cầu: ${item.quantity}`
         });
       }
     }
 
     // Tạo request
+    console.log('✅ All equipment validation passed. Creating BorrowRequest...');
+
     const borrowRequest = new BorrowRequest({
       borrower: borrowerId,
       equipments,
@@ -104,10 +115,20 @@ const createBorrowRequest = async (req, res) => {
       status: 'pending'
     });
 
+    console.log('📝 BorrowRequest object created:', {
+      borrower: borrowRequest.borrower,
+      equipments: borrowRequest.equipments,
+      status: borrowRequest.status
+    });
+
+    console.log('💾 Saving BorrowRequest...');
     await borrowRequest.save();
+    console.log('✅ BorrowRequest saved successfully');
 
     // Populate để trả về
+    console.log('🔗 Populating borrower...');
     await borrowRequest.populate('borrower', 'fullName email studentId');
+    console.log('🔗 Populating equipments...');
     await borrowRequest.populate('equipments.equipment', 'name code category');
 
     res.status(201).json({
@@ -125,7 +146,7 @@ const createBorrowRequest = async (req, res) => {
   }
 };
 
-// ✅ Duyệt yêu cầu (Admin only)
+// Duyệt yêu cầu (Admin only)
 const approveBorrowRequest = async (req, res) => {
   try {
     const { id } = req.params;
@@ -172,7 +193,7 @@ const approveBorrowRequest = async (req, res) => {
   }
 };
 
-// ❌ Từ chối yêu cầu (Admin only)
+// Từ chối yêu cầu (Admin only)
 const rejectBorrowRequest = async (req, res) => {
   try {
     const { id } = req.params;
@@ -226,7 +247,7 @@ const rejectBorrowRequest = async (req, res) => {
   }
 };
 
-// 📦 Cho mượn thiết bị (Admin only) 
+// Cho mượn thiết bị (Admin only) 
 const borrowEquipment = async (req, res) => {
   try {
     const { id } = req.params;
@@ -251,15 +272,15 @@ const borrowEquipment = async (req, res) => {
     // Cập nhật số lượng thiết bị
     for (const item of borrowRequest.equipments) {
       const equipment = await Equipment.findById(item.equipment._id);
-      if (equipment.quantity.available < item.quantity) {
+      if (equipment.availableQuantity < item.quantity) {
         return res.status(400).json({
           success: false,
           message: `Thiết bị "${equipment.name}" không đủ số lượng để cho mượn`
         });
       }
       
-      equipment.quantity.available -= item.quantity;
-      equipment.quantity.borrowed += item.quantity;
+      equipment.availableQuantity -= item.quantity;
+      equipment.borrowedQuantity += item.quantity;
       await equipment.save();
     }
 
@@ -288,7 +309,7 @@ const borrowEquipment = async (req, res) => {
   }
 };
 
-// 🔄 Trả thiết bị (Admin only)
+// Trả thiết bị (Admin only)
 const returnEquipment = async (req, res) => {
   try {
     const { id } = req.params;
@@ -314,8 +335,8 @@ const returnEquipment = async (req, res) => {
     // Cập nhật số lượng thiết bị
     for (const item of borrowRequest.equipments) {
       const equipment = await Equipment.findById(item.equipment._id);
-      equipment.quantity.available += item.quantity;
-      equipment.quantity.borrowed -= item.quantity;
+      equipment.availableQuantity += item.quantity;
+      equipment.borrowedQuantity -= item.quantity;
       await equipment.save();
     }
 
@@ -348,7 +369,7 @@ const returnEquipment = async (req, res) => {
   }
 };
 
-// 📊 Thống kê đơn giản
+// Thống kê đơn giản
 const getStats = async (req, res) => {
   try {
     const stats = {
