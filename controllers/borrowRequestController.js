@@ -102,10 +102,20 @@ const createBorrowRequest = async (req, res) => {
       }
     }
 
+    // Generate request number
+    console.log('🔢 Generating request number...');
+    const count = await BorrowRequest.countDocuments();
+    const date = new Date();
+    const year = date.getFullYear().toString().slice(-2);
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const requestNumber = `BR${year}${month}${(count + 1).toString().padStart(4, '0')}`;
+    console.log('🔢 Generated request number:', requestNumber);
+
     // Tạo request
     console.log('✅ All equipment validation passed. Creating BorrowRequest...');
 
     const borrowRequest = new BorrowRequest({
+      requestNumber,
       borrower: borrowerId,
       equipments,
       borrowDate: new Date(borrowDate),
@@ -116,6 +126,7 @@ const createBorrowRequest = async (req, res) => {
     });
 
     console.log('📝 BorrowRequest object created:', {
+      requestNumber: borrowRequest.requestNumber,
       borrower: borrowRequest.borrower,
       equipments: borrowRequest.equipments,
       status: borrowRequest.status
@@ -152,7 +163,9 @@ const approveBorrowRequest = async (req, res) => {
     const { id } = req.params;
     const { notes } = req.body;
 
-    const borrowRequest = await BorrowRequest.findById(id);
+    const borrowRequest = await BorrowRequest.findById(id)
+      .populate('equipments.equipment');
+
     if (!borrowRequest) {
       return res.status(404).json({
         success: false,
@@ -167,11 +180,29 @@ const approveBorrowRequest = async (req, res) => {
       });
     }
 
-    // Update status
-    borrowRequest.status = 'approved';
+    // Kiểm tra và cập nhật số lượng thiết bị
+    for (const item of borrowRequest.equipments) {
+      const equipment = await Equipment.findById(item.equipment._id);
+      if (equipment.availableQuantity < item.quantity) {
+        return res.status(400).json({
+          success: false,
+          message: `Thiết bị "${equipment.name}" không đủ số lượng để cho mượn. Có sẵn: ${equipment.availableQuantity}, yêu cầu: ${item.quantity}`
+        });
+      }
+      
+      // Trừ số lượng thiết bị ngay khi approve
+      equipment.availableQuantity -= item.quantity;
+      equipment.borrowedQuantity += item.quantity;
+      await equipment.save();
+    }
+
+    // Update status thành borrowed luôn (bỏ qua approved)
+    borrowRequest.status = 'borrowed';
     borrowRequest.reviewedBy = req.user.id;
     borrowRequest.reviewedAt = new Date();
     borrowRequest.reviewNotes = notes || '';
+    borrowRequest.borrowedBy = req.user.id;
+    borrowRequest.borrowedAt = new Date();
 
     await borrowRequest.save();
 
@@ -180,7 +211,7 @@ const approveBorrowRequest = async (req, res) => {
 
     res.json({
       success: true,
-      message: 'Duyệt yêu cầu mượn thành công',
+      message: 'Duyệt và cho mượn thiết bị thành công',
       data: borrowRequest
     });
   } catch (error) {
