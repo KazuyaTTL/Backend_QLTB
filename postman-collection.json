@@ -524,6 +524,31 @@
 					}
 				},
 				{
+					"name": "Get User Pending Overview (Admin)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{admin_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/requests/pending-overview/:userId",
+							"host": ["{{base_url}}"],
+							"path": ["api", "requests", "pending-overview", ":userId"],
+							"variable": [
+								{
+									"key": "userId",
+									"value": "68438eb3753d73ae670cbd9b",
+									"description": "User ID để xem tổng quan pending requests"
+								}
+							]
+						},
+						"description": "API để admin xem tổng quan các pending requests của một user cụ thể. Bao gồm:\n- Thông tin user và giới hạn mượn\n- Danh sách pending requests\n- Scenarios duyệt từng request\n- Khuyến nghị thứ tự duyệt\n- Tính toán có vượt quá giới hạn hay không"
+					}
+				},
+				{
 					"name": "Approve Request (Admin)",
 					"request": {
 						"method": "PUT",
@@ -667,6 +692,32 @@
 					}
 				},
 				{
+					"name": "Test Borrow Limit Exceeded",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{student_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"equipments\": [\n    {\n      \"equipment\": \"EQUIPMENT_ID_HERE\",\n      \"quantity\": 5\n    }\n  ],\n  \"borrowDate\": \"2025-06-15T00:00:00Z\",\n  \"expectedReturnDate\": \"2025-06-30T00:00:00Z\",\n  \"purpose\": \"Test vượt quá giới hạn mượn thiết bị\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/requests",
+							"host": ["{{base_url}}"],
+							"path": ["api", "requests"]
+						},
+						"description": "Test case để kiểm tra logic giới hạn mượn thiết bị có hoạt động đúng không"
+					}
+				},
+				{
 					"name": "Filter - Invalid Category (400 Error)",
 					"request": {
 						"method": "GET",
@@ -767,6 +818,171 @@
 								{
 									"key": "sortOrder",
 									"value": "asc"
+								}
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "User Management (Admin)",
+			"item": [
+				{
+					"name": "Get All Users",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{admin_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/users?page=1&limit=10&role=student",
+							"host": ["{{base_url}}"],
+							"path": ["api", "users"],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								},
+								{
+									"key": "role",
+									"value": "student",
+									"description": "all, student, admin"
+								},
+								{
+									"key": "isRestricted",
+									"value": "false",
+									"disabled": true,
+									"description": "true, false"
+								},
+								{
+									"key": "search",
+									"value": "",
+									"disabled": true,
+									"description": "Search by name, email, studentId"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Get User Details",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{admin_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/users/:userId",
+							"host": ["{{base_url}}"],
+							"path": ["api", "users", ":userId"],
+							"variable": [
+								{
+									"key": "userId",
+									"value": "USER_ID_HERE"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Update User Borrow Limit",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{admin_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"borrowLimit\": 5,\n  \"reason\": \"Sinh viên ưu tú, tăng giới hạn mượn\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/users/:userId/borrow-limit",
+							"host": ["{{base_url}}"],
+							"path": ["api", "users", ":userId", "borrow-limit"],
+							"variable": [
+								{
+									"key": "userId",
+									"value": "USER_ID_HERE"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Add User Restriction",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{admin_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"type\": \"admin_restriction\",\n  \"reason\": \"Vi phạm quy định sử dụng thiết bị\",\n  \"duration\": 14\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/users/:userId/restrictions",
+							"host": ["{{base_url}}"],
+							"path": ["api", "users", ":userId", "restrictions"],
+							"variable": [
+								{
+									"key": "userId",
+									"value": "USER_ID_HERE"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Remove User Restrictions",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{admin_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"reason\": \"Đã khắc phục vi phạm, bỏ hạn chế\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/users/:userId/restrictions",
+							"host": ["{{base_url}}"],
+							"path": ["api", "users", ":userId", "restrictions"],
+							"variable": [
+								{
+									"key": "userId",
+									"value": "USER_ID_HERE"
 								}
 							]
 						}

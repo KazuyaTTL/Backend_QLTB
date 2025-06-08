@@ -365,6 +365,252 @@ const createAdminAccount = async (req, res) => {
   }
 };
 
+// === USER MANAGEMENT FOR ADMIN ===
+
+// Lấy danh sách tất cả users (Admin only)
+const getAllUsers = async (req, res) => {
+  try {
+    const { page = 1, limit = 10, role, isRestricted, search } = req.query;
+    
+    // Build filter
+    const filter = {};
+    if (role && role !== 'all') filter.role = role;
+    if (isRestricted !== undefined) filter.isRestricted = isRestricted === 'true';
+    if (search) {
+      filter.$or = [
+        { fullName: { $regex: search, $options: 'i' } },
+        { email: { $regex: search, $options: 'i' } },
+        { studentId: { $regex: search, $options: 'i' } }
+      ];
+    }
+
+    const skip = (page - 1) * limit;
+    
+    const users = await User.find(filter)
+      .select('-password')
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(parseInt(limit));
+
+    const total = await User.countDocuments(filter);
+
+    res.json({
+      status: 'success',
+      data: users,
+      pagination: {
+        currentPage: parseInt(page),
+        totalPages: Math.ceil(total / limit),
+        total,
+        limit: parseInt(limit)
+      }
+    });
+  } catch (error) {
+    console.error('Get all users error:', error);
+    res.status(500).json({
+      status: 'error',
+      message: 'Lỗi khi lấy danh sách người dùng'
+    });
+  }
+};
+
+// Cập nhật borrow limit của user (Admin only)
+const updateUserBorrowLimit = async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const { borrowLimit, reason } = req.body;
+
+    if (!borrowLimit || borrowLimit < 0 || borrowLimit > 20) {
+      return res.status(400).json({
+        status: 'error',
+        message: 'Giới hạn mượn phải từ 0-20'
+      });
+    }
+
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({
+        status: 'error',
+        message: 'Không tìm thấy người dùng'
+      });
+    }
+
+    const oldLimit = user.borrowLimit;
+    user.borrowLimit = borrowLimit;
+    
+    // Thêm vào history
+    user.borrowHistory.push({
+      action: 'limit_updated',
+      date: new Date(),
+      equipmentCount: 0,
+      notes: `Giới hạn thay đổi từ ${oldLimit} → ${borrowLimit}. Lý do: ${reason || 'Không có'}`
+    });
+
+    await user.save();
+
+    res.json({
+      status: 'success',
+      message: 'Cập nhật giới hạn mượn thành công',
+      data: {
+        userId: user._id,
+        oldLimit,
+        newLimit: borrowLimit,
+        currentBorrowCount: user.currentBorrowCount,
+        updatedBy: req.user.fullName
+      }
+    });
+  } catch (error) {
+    console.error('Update borrow limit error:', error);
+    res.status(500).json({
+      status: 'error',
+      message: 'Lỗi khi cập nhật giới hạn mượn'
+    });
+  }
+};
+
+// Thêm restriction cho user (Admin only)
+const addUserRestriction = async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const { type, reason, duration } = req.body;
+
+    if (!type || !reason) {
+      return res.status(400).json({
+        status: 'error',
+        message: 'Vui lòng nhập đầy đủ loại hạn chế và lý do'
+      });
+    }
+
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({
+        status: 'error',
+        message: 'Không tìm thấy người dùng'
+      });
+    }
+
+    let endDate = null;
+    if (duration) {
+      endDate = new Date();
+      endDate.setDate(endDate.getDate() + parseInt(duration));
+    }
+
+    await user.addRestriction(type, reason, endDate, req.user.id);
+
+    res.json({
+      status: 'success',
+      message: 'Thêm hạn chế thành công',
+      data: {
+        userId: user._id,
+        restriction: {
+          type,
+          reason,
+          endDate,
+          duration: duration ? `${duration} ngày` : 'Vĩnh viễn'
+        },
+        addedBy: req.user.fullName
+      }
+    });
+  } catch (error) {
+    console.error('Add restriction error:', error);
+    res.status(500).json({
+      status: 'error',
+      message: 'Lỗi khi thêm hạn chế'
+    });
+  }
+};
+
+// Bỏ restriction cho user (Admin only)
+const removeUserRestriction = async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const { reason } = req.body;
+
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({
+        status: 'error',
+        message: 'Không tìm thấy người dùng'
+      });
+    }
+
+    user.borrowRestrictions = [];
+    user.isRestricted = false;
+    
+    // Thêm vào history
+    user.borrowHistory.push({
+      action: 'restriction_removed',
+      date: new Date(),
+      equipmentCount: 0,
+      notes: `Bỏ hạn chế. Lý do: ${reason || 'Admin bỏ hạn chế'}`
+    });
+
+    await user.save();
+
+    res.json({
+      status: 'success',
+      message: 'Bỏ hạn chế thành công',
+      data: {
+        userId: user._id,
+        removedBy: req.user.fullName,
+        reason: reason || 'Admin bỏ hạn chế'
+      }
+    });
+  } catch (error) {
+    console.error('Remove restriction error:', error);
+    res.status(500).json({
+      status: 'error',
+      message: 'Lỗi khi bỏ hạn chế'
+    });
+  }
+};
+
+// Lấy chi tiết user với history (Admin only)
+const getUserDetails = async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    const user = await User.findById(userId)
+      .select('-password')
+      .populate('borrowHistory.requestId', 'requestNumber status');
+
+    if (!user) {
+      return res.status(404).json({
+        status: 'error',
+        message: 'Không tìm thấy người dùng'
+      });
+    }
+
+    // Lấy current active requests
+    const BorrowRequest = require('../models/BorrowRequest');
+    const activeRequests = await BorrowRequest.find({
+      borrower: userId,
+      status: { $in: ['pending', 'approved', 'borrowed'] }
+    }).populate('equipments.equipment', 'name code');
+
+    res.json({
+      status: 'success',
+      data: {
+        user,
+        activeRequests,
+        summary: {
+          totalBorrowHistory: user.borrowHistory.length,
+          currentlyBorrowing: user.currentBorrowCount,
+          borrowLimit: user.borrowLimit,
+          overdueCount: user.overdueCount,
+          isRestricted: user.isRestricted,
+          activeRestrictions: user.borrowRestrictions.filter(r => !r.endDate || r.endDate > new Date())
+        }
+      }
+    });
+  } catch (error) {
+    console.error('Get user details error:', error);
+    res.status(500).json({
+      status: 'error',
+      message: 'Lỗi khi lấy thông tin người dùng'
+    });
+  }
+};
+
 module.exports = {
   register,
   login,
@@ -373,5 +619,11 @@ module.exports = {
   changePassword,
   refreshToken,
   logout,
-  createAdminAccount
+  createAdminAccount,
+  // User Management
+  getAllUsers,
+  updateUserBorrowLimit,
+  addUserRestriction,
+  removeUserRestriction,
+  getUserDetails
 }; 

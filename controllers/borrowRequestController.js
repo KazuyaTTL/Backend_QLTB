@@ -47,7 +47,7 @@ const getBorrowRequests = async (req, res) => {
   }
 };
 
-// Tạo yêu cầu mượn mới (đơn giản)
+// Tạo yêu cầu mượn mới (với borrow limits)
 const createBorrowRequest = async (req, res) => {
   try {
     const { equipments, borrowDate, expectedReturnDate, purpose, notes } = req.body;
@@ -74,6 +74,54 @@ const createBorrowRequest = async (req, res) => {
         message: 'Mục đích sử dụng phải có ít nhất 10 ký tự'
       });
     }
+
+    // === KIỂM TRA BORROW LIMITS ===
+    console.log('🔍 Checking borrow limits for user:', req.user.id);
+    
+    // Lấy thông tin user với borrow tracking
+    const borrower = await User.findById(borrowerId);
+    if (!borrower) {
+      return res.status(404).json({
+        success: false,
+        message: 'Không tìm thấy thông tin người dùng'
+      });
+    }
+
+    // Bỏ restrictions đã hết hạn
+    await borrower.removeExpiredRestrictions();
+
+    // Tính tổng số lượng thiết bị yêu cầu
+    const totalRequestQuantity = equipments.reduce((sum, item) => sum + item.quantity, 0);
+    console.log(`📊 Current borrow count: ${borrower.currentBorrowCount}/${borrower.borrowLimit}`);
+    console.log(`📦 Requesting: ${totalRequestQuantity} items`);
+
+    // Kiểm tra có thể tạo request không (bao gồm cả pending requests)
+    const borrowCheck = await borrower.canCreateRequest(totalRequestQuantity);
+    if (!borrowCheck.allowed) {
+      console.log('❌ Borrow limit exceeded:', borrowCheck.reason);
+      return res.status(400).json({
+        success: false,
+        message: borrowCheck.reason,
+        details: {
+          currentBorrowCount: borrower.currentBorrowCount,
+          pendingCount: borrowCheck.pendingCount || 0,
+          requestedCount: totalRequestQuantity,
+          borrowLimit: borrower.borrowLimit,
+          total: borrowCheck.total || borrower.currentBorrowCount + totalRequestQuantity,
+          isRestricted: borrower.isRestricted,
+          restrictions: borrowCheck.restrictions
+        }
+      });
+    }
+
+    console.log('✅ Borrow limits OK:', {
+      current: borrowCheck.currentCount,
+      pending: borrowCheck.pendingCount,
+      requested: borrowCheck.requestedCount,
+      total: borrowCheck.total,
+      limit: borrowCheck.limit,
+      remaining: borrowCheck.remaining
+    });
 
     // Kiểm tra equipment tồn tại và đủ số lượng
     for (const item of equipments) {
@@ -112,7 +160,7 @@ const createBorrowRequest = async (req, res) => {
     console.log('🔢 Generated request number:', requestNumber);
 
     // Tạo request
-    console.log('✅ All equipment validation passed. Creating BorrowRequest...');
+    console.log('✅ All validations passed. Creating BorrowRequest...');
 
     const borrowRequest = new BorrowRequest({
       requestNumber,
@@ -129,7 +177,8 @@ const createBorrowRequest = async (req, res) => {
       requestNumber: borrowRequest.requestNumber,
       borrower: borrowRequest.borrower,
       equipments: borrowRequest.equipments,
-      status: borrowRequest.status
+      status: borrowRequest.status,
+      totalQuantity: totalRequestQuantity
     });
 
     console.log('💾 Saving BorrowRequest...');
@@ -138,14 +187,22 @@ const createBorrowRequest = async (req, res) => {
 
     // Populate để trả về
     console.log('🔗 Populating borrower...');
-    await borrowRequest.populate('borrower', 'fullName email studentId');
+    await borrowRequest.populate('borrower', 'fullName email studentId currentBorrowCount borrowLimit');
     console.log('🔗 Populating equipments...');
     await borrowRequest.populate('equipments.equipment', 'name code category');
 
     res.status(201).json({
       success: true,
       message: 'Tạo yêu cầu mượn thành công',
-      data: borrowRequest
+      data: borrowRequest,
+      borrowStatus: {
+        currentBorrowCount: borrower.currentBorrowCount,
+        pendingCount: borrowCheck.pendingCount || 0,
+        requestedCount: totalRequestQuantity,
+        borrowLimit: borrower.borrowLimit,
+        totalCommitted: borrowCheck.total,
+        remainingSlots: borrowCheck.remaining
+      }
     });
   } catch (error) {
     console.error('Error creating borrow request:', error);
@@ -164,7 +221,8 @@ const approveBorrowRequest = async (req, res) => {
     const { notes } = req.body;
 
     const borrowRequest = await BorrowRequest.findById(id)
-      .populate('equipments.equipment');
+      .populate('equipments.equipment')
+      .populate('borrower');
 
     if (!borrowRequest) {
       return res.status(404).json({
@@ -177,6 +235,28 @@ const approveBorrowRequest = async (req, res) => {
       return res.status(400).json({
         success: false,
         message: `Không thể duyệt yêu cầu có trạng thái: ${borrowRequest.status}`
+      });
+    }
+
+    // === KIỂM TRA LẠI BORROW LIMITS KHI APPROVE ===
+    const borrower = await User.findById(borrowRequest.borrower._id);
+    await borrower.removeExpiredRestrictions();
+
+    const totalRequestQuantity = borrowRequest.equipments.reduce((sum, item) => sum + item.quantity, 0);
+    
+    // Kiểm tra giới hạn đơn giản
+    const borrowCheck = borrower.canBorrow(totalRequestQuantity);
+    
+    if (!borrowCheck.allowed) {
+      console.log('❌ Borrow limit exceeded at approve time:', borrowCheck.reason);
+      return res.status(400).json({
+        success: false,
+        message: `Không thể duyệt: ${borrowCheck.reason}`,
+        details: {
+          currentBorrowCount: borrower.currentBorrowCount,
+          borrowLimit: borrower.borrowLimit,
+          isRestricted: borrower.isRestricted
+        }
       });
     }
 
@@ -196,6 +276,11 @@ const approveBorrowRequest = async (req, res) => {
       await equipment.save();
     }
 
+    // === CẬP NHẬT BORROW COUNT CỦA USER ===
+    console.log(`📊 Updating borrow count: ${borrower.currentBorrowCount} + ${totalRequestQuantity}`);
+    await borrower.updateBorrowCount(totalRequestQuantity, borrowRequest._id);
+    console.log(`📊 New borrow count: ${borrower.currentBorrowCount + totalRequestQuantity}`);
+
     // Update status thành borrowed luôn (bỏ qua approved)
     borrowRequest.status = 'borrowed';
     borrowRequest.reviewedBy = req.user.id;
@@ -206,13 +291,18 @@ const approveBorrowRequest = async (req, res) => {
 
     await borrowRequest.save();
 
-    await borrowRequest.populate('borrower', 'fullName email studentId');
+    await borrowRequest.populate('borrower', 'fullName email studentId currentBorrowCount borrowLimit');
     await borrowRequest.populate('equipments.equipment', 'name code category');
 
     res.json({
       success: true,
       message: 'Duyệt và cho mượn thiết bị thành công',
-      data: borrowRequest
+      data: borrowRequest,
+      borrowStatus: {
+        currentBorrowCount: borrower.currentBorrowCount + totalRequestQuantity,
+        borrowLimit: borrower.borrowLimit,
+        remainingSlots: borrower.borrowLimit - (borrower.currentBorrowCount + totalRequestQuantity)
+      }
     });
   } catch (error) {
     console.error('Error approving borrow request:', error);
@@ -347,7 +437,8 @@ const returnEquipment = async (req, res) => {
     const { notes } = req.body;
 
     const borrowRequest = await BorrowRequest.findById(id)
-      .populate('equipments.equipment');
+      .populate('equipments.equipment')
+      .populate('borrower');
 
     if (!borrowRequest) {
       return res.status(404).json({
@@ -363,6 +454,11 @@ const returnEquipment = async (req, res) => {
       });
     }
 
+    // === KIỂM TRA QUÁ HẠN ===
+    const now = new Date();
+    const isOverdue = now > borrowRequest.expectedReturnDate;
+    console.log(`📅 Expected return: ${borrowRequest.expectedReturnDate}, Now: ${now}, Overdue: ${isOverdue}`);
+
     // Cập nhật số lượng thiết bị
     for (const item of borrowRequest.equipments) {
       const equipment = await Equipment.findById(item.equipment._id);
@@ -371,24 +467,67 @@ const returnEquipment = async (req, res) => {
       await equipment.save();
     }
 
+    // === CẬP NHẬT BORROW COUNT CỦA USER ===
+    const borrower = await User.findById(borrowRequest.borrower._id);
+    const totalReturnQuantity = borrowRequest.equipments.reduce((sum, item) => sum + item.quantity, 0);
+    
+    console.log(`📊 Updating borrow count: ${borrower.currentBorrowCount} - ${totalReturnQuantity}`);
+    await borrower.updateBorrowCount(-totalReturnQuantity, borrowRequest._id);
+    console.log(`📊 New borrow count: ${borrower.currentBorrowCount - totalReturnQuantity}`);
+
+    // === XỬ LÝ VI PHẠM QUÁ HẠN ===
+    if (isOverdue) {
+      console.log('⚠️ Overdue return detected, applying penalties...');
+      await borrower.handleOverdue();
+      
+      // Thêm vào borrowHistory với action 'overdue'
+      borrower.borrowHistory.push({
+        requestId: borrowRequest._id,
+        action: 'overdue',
+        date: new Date(),
+        equipmentCount: totalReturnQuantity
+      });
+      await borrower.save();
+    }
+
     // Update request status
     borrowRequest.status = 'returned';
     borrowRequest.returnedBy = req.user.id;
     borrowRequest.returnedAt = new Date();
     borrowRequest.actualReturnDate = new Date();
+    
     if (notes) {
       borrowRequest.notes = (borrowRequest.notes || '') + '\n--- Ghi chú khi trả ---\n' + notes;
+    }
+    
+    if (isOverdue) {
+      const overdueDays = Math.ceil((now - borrowRequest.expectedReturnDate) / (1000 * 60 * 60 * 24));
+      borrowRequest.notes = (borrowRequest.notes || '') + `\n--- CẢNH BÁO ---\nTrả muộn ${overdueDays} ngày!`;
     }
 
     await borrowRequest.save();
 
-    await borrowRequest.populate('borrower', 'fullName email studentId');
+    await borrowRequest.populate('borrower', 'fullName email studentId currentBorrowCount borrowLimit overdueCount');
     await borrowRequest.populate('equipments.equipment', 'name code category');
 
     res.json({
       success: true,
-      message: 'Trả thiết bị thành công',
-      data: borrowRequest
+      message: isOverdue ? 
+        `Nhận trả thiết bị thành công (MUỘN ${Math.ceil((now - borrowRequest.expectedReturnDate) / (1000 * 60 * 60 * 24))} ngày)` : 
+        'Nhận trả thiết bị thành công',
+      data: borrowRequest,
+      borrowStatus: {
+        currentBorrowCount: borrower.currentBorrowCount - totalReturnQuantity,
+        borrowLimit: borrower.borrowLimit,
+        remainingSlots: borrower.borrowLimit - (borrower.currentBorrowCount - totalReturnQuantity),
+        overdueCount: isOverdue ? borrower.overdueCount + 1 : borrower.overdueCount,
+        isOverdue: isOverdue
+      },
+      penalties: isOverdue ? {
+        applied: true,
+        newOverdueCount: borrower.overdueCount + 1,
+        restrictions: borrower.borrowRestrictions.filter(r => !r.endDate || r.endDate > new Date())
+      } : null
     });
   } catch (error) {
     console.error('Error returning equipment:', error);
@@ -426,6 +565,105 @@ const getStats = async (req, res) => {
   }
 };
 
+// Xem tổng quan pending requests của user (Admin only)
+const getUserPendingOverview = async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    // Lấy thông tin user
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'Không tìm thấy người dùng'
+      });
+    }
+
+    // Lấy tất cả pending requests của user
+    const pendingRequests = await BorrowRequest.find({
+      borrower: userId,
+      status: 'pending'
+    })
+    .populate('equipments.equipment', 'name code category')
+    .sort({ createdAt: -1 });
+
+    // Tính tổng số lượng thiết bị trong pending requests
+    const totalPendingQuantity = pendingRequests.reduce((total, request) => {
+      return total + request.equipments.reduce((sum, item) => sum + item.quantity, 0);
+    }, 0);
+
+    // Tính các scenarios duyệt
+    const scenarios = [];
+    let currentCount = user.currentBorrowCount;
+    
+    for (let i = 0; i < pendingRequests.length; i++) {
+      const request = pendingRequests[i];
+      const requestQuantity = request.equipments.reduce((sum, item) => sum + item.quantity, 0);
+      
+      scenarios.push({
+        requestId: request._id,
+        requestNumber: request.requestNumber,
+        quantity: requestQuantity,
+        canApprove: (currentCount + requestQuantity) <= user.borrowLimit,
+        newTotal: currentCount + requestQuantity,
+        remainingSlots: user.borrowLimit - (currentCount + requestQuantity),
+        equipments: request.equipments.map(item => ({
+          name: item.equipment.name,
+          code: item.equipment.code,
+          quantity: item.quantity
+        }))
+      });
+      
+      // Giả sử approve request này
+      if ((currentCount + requestQuantity) <= user.borrowLimit) {
+        currentCount += requestQuantity;
+      }
+    }
+
+    res.json({
+      success: true,
+      data: {
+        user: {
+          _id: user._id,
+          fullName: user.fullName,
+          studentId: user.studentId,
+          email: user.email,
+          currentBorrowCount: user.currentBorrowCount,
+          borrowLimit: user.borrowLimit,
+          isRestricted: user.isRestricted
+        },
+        overview: {
+          totalPendingRequests: pendingRequests.length,
+          totalPendingQuantity: totalPendingQuantity,
+          currentBorrowCount: user.currentBorrowCount,
+          borrowLimit: user.borrowLimit,
+          remainingSlots: user.borrowLimit - user.currentBorrowCount,
+          wouldExceedLimit: (user.currentBorrowCount + totalPendingQuantity) > user.borrowLimit,
+          excessQuantity: Math.max(0, (user.currentBorrowCount + totalPendingQuantity) - user.borrowLimit)
+        },
+        pendingRequests: pendingRequests,
+        approvalScenarios: scenarios,
+        recommendations: {
+          canApproveAll: (user.currentBorrowCount + totalPendingQuantity) <= user.borrowLimit,
+          maxApprovableRequests: scenarios.filter(s => s.canApprove).length,
+          suggestedOrder: scenarios
+            .filter(s => s.canApprove)
+            .sort((a, b) => new Date(pendingRequests.find(r => r._id.toString() === a.requestId).createdAt) - 
+                            new Date(pendingRequests.find(r => r._id.toString() === b.requestId).createdAt))
+            .map(s => s.requestNumber)
+        }
+      }
+    });
+  } catch (error) {
+    console.error('Error getting user pending overview:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Lỗi khi lấy tổng quan yêu cầu pending',
+      error: error.message
+    });
+  }
+};
+
 module.exports = {
   getBorrowRequests,
   createBorrowRequest,
@@ -433,5 +671,6 @@ module.exports = {
   rejectBorrowRequest,
   borrowEquipment,
   returnEquipment,
-  getStats
+  getStats,
+  getUserPendingOverview
 }; 

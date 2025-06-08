@@ -7,12 +7,20 @@ const {
   rejectBorrowRequest,
   borrowEquipment,
   returnEquipment,
-  getStats
+  getStats,
+  getUserPendingOverview
 } = require('../controllers/borrowRequestController');
 const { authenticateToken, requireAdmin } = require('../middleware/auth');
 
 //  Tất cả routes cần authentication
 router.use(authenticateToken);
+
+// Debug middleware để log tất cả requests
+router.use((req, res, next) => {
+  console.log(`🔍 Route Debug: ${req.method} ${req.path} - Original URL: ${req.originalUrl}`);
+  console.log(`🔍 Params:`, req.params);
+  next();
+});
 
 //  GET /api/requests/stats - Thống kê (all users)
 router.get('/stats', getStats);
@@ -26,6 +34,14 @@ router.post('/', createBorrowRequest);
 //  Routes chỉ dành cho admin
 router.use(requireAdmin);
 
+//  ==== ROUTES CỤ THỂ PHẢI ĐẶT TRƯỚC ROUTES TỔNG QUÁT ====
+//  GET /api/requests/pending-overview/:userId - Xem tổng quan pending requests của user
+router.get('/pending-overview/:userId', (req, res, next) => {
+  console.log('🎯 Hit getUserPendingOverview route!', req.params);
+  getUserPendingOverview(req, res, next);
+});
+
+//  ==== ROUTES TỔNG QUÁT VỚI :id ====
 //  PUT /api/requests/:id/approve - Duyệt request
 router.put('/:id/approve', approveBorrowRequest);
 
