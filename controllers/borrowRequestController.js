@@ -1,6 +1,7 @@
 const BorrowRequest = require('../models/BorrowRequest');
 const User = require('../models/User');
 const Equipment = require('../models/Equipment');
+const notificationService = require('../services/notificationService');
 
 // Lấy danh sách requests (có filter cơ bản)
 const getBorrowRequests = async (req, res) => {
@@ -294,6 +295,14 @@ const approveBorrowRequest = async (req, res) => {
     await borrowRequest.populate('borrower', 'fullName email studentId currentBorrowCount borrowLimit');
     await borrowRequest.populate('equipments.equipment', 'name code category');
 
+    // Gửi thông báo đến người dùng
+    try {
+      await notificationService.createBorrowSuccessNotification(borrowRequest);
+      console.log('📱 Đã gửi thông báo duyệt yêu cầu thành công');
+    } catch (notifError) {
+      console.error('❌ Lỗi gửi thông báo:', notifError.message);
+    }
+
     res.json({
       success: true,
       message: 'Duyệt và cho mượn thiết bị thành công',
@@ -352,6 +361,14 @@ const rejectBorrowRequest = async (req, res) => {
 
     await borrowRequest.populate('borrower', 'fullName email studentId');
     await borrowRequest.populate('equipments.equipment', 'name code category');
+
+    // Gửi thông báo từ chối đến người dùng
+    try {
+      await notificationService.createRequestRejectedNotification(borrowRequest, reason.trim());
+      console.log('📱 Đã gửi thông báo từ chối yêu cầu');
+    } catch (notifError) {
+      console.error('❌ Lỗi gửi thông báo:', notifError.message);
+    }
 
     res.json({
       success: true,
@@ -509,6 +526,14 @@ const returnEquipment = async (req, res) => {
 
     await borrowRequest.populate('borrower', 'fullName email studentId currentBorrowCount borrowLimit overdueCount');
     await borrowRequest.populate('equipments.equipment', 'name code category');
+
+    // Gửi thông báo trả thiết bị thành công
+    try {
+      await notificationService.createReturnSuccessNotification(borrowRequest);
+      console.log('📱 Đã gửi thông báo trả thiết bị thành công');
+    } catch (notifError) {
+      console.error('❌ Lỗi gửi thông báo:', notifError.message);
+    }
 
     res.json({
       success: true,

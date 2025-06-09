@@ -4,12 +4,16 @@ const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 const dotenv = require('dotenv');
 const connectDB = require('./config/database');
+const CronJobs = require('./utils/cronJobs');
 
 // Load environment variables
 dotenv.config();
 
 // Connect to database
 connectDB();
+
+// Start cron jobs
+CronJobs.start();
 
 const app = express();
 
@@ -60,6 +64,8 @@ app.use('/api/users', require('./routes/users'));
 app.use('/api/equipment', require('./routes/equipment'));
 app.use('/api/requests', require('./routes/requests'));
 app.use('/api/admin', require('./routes/admin'));
+app.use('/api/statistics', require('./routes/statistics'));
+app.use('/api/notifications', require('./routes/notifications'));
 
 // Welcome message
 app.get('/', (req, res) => {

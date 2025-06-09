@@ -989,6 +989,350 @@
 					}
 				}
 			]
+		},
+		{
+			"name": "Statistics & Email Warnings",
+			"item": [
+				{
+					"name": "Get Most Borrowed Equipment (Current Month)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{admin_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/statistics/most-borrowed",
+							"host": ["{{base_url}}"],
+							"path": ["api", "statistics", "most-borrowed"],
+							"query": [
+								{
+									"key": "year",
+									"value": "2024",
+									"disabled": true,
+									"description": "Optional: specify year"
+								},
+								{
+									"key": "month",
+									"value": "6",
+									"disabled": true,
+									"description": "Optional: specify month (1-12)"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Most Borrowed Equipment (Specific Month)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{student_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/statistics/most-borrowed?year=2025&month=5",
+							"host": ["{{base_url}}"],
+							"path": ["api", "statistics", "most-borrowed"],
+							"query": [
+								{
+									"key": "year",
+									"value": "2025"
+								},
+								{
+									"key": "month",
+									"value": "5"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Monthly Overview",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{admin_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/statistics/monthly-overview",
+							"host": ["{{base_url}}"],
+							"path": ["api", "statistics", "monthly-overview"],
+							"query": [
+								{
+									"key": "year",
+									"value": "2024",
+									"disabled": true
+								},
+								{
+									"key": "month",
+									"value": "6",
+									"disabled": true
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Current Statistics",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{student_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/statistics/current",
+							"host": ["{{base_url}}"],
+							"path": ["api", "statistics", "current"]
+						}
+					}
+				},
+				{
+					"name": "Compare Monthly Statistics",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{admin_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/statistics/compare?year1=2025&month1=5&year2=2025&month2=6",
+							"host": ["{{base_url}}"],
+							"path": ["api", "statistics", "compare"],
+							"query": [
+								{
+									"key": "year1",
+									"value": "2025"
+								},
+								{
+									"key": "month1",
+									"value": "5"
+								},
+								{
+									"key": "year2",
+									"value": "2025"
+								},
+								{
+									"key": "month2",
+									"value": "6"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Send Due Date Warnings (Manual)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{admin_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/statistics/send-warnings",
+							"host": ["{{base_url}}"],
+							"path": ["api", "statistics", "send-warnings"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Notifications",
+			"item": [
+				{
+					"name": "Get My Notifications",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{student_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/notifications?page=1&limit=10",
+							"host": ["{{base_url}}"],
+							"path": ["api", "notifications"],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								},
+								{
+									"key": "type",
+									"value": "return_reminder",
+									"disabled": true,
+									"description": "request_approved, request_rejected, borrow_success, return_reminder, return_overdue, return_success, general"
+								},
+								{
+									"key": "isRead",
+									"value": "false",
+									"disabled": true,
+									"description": "true, false"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Unread Count",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{student_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/notifications/unread-count",
+							"host": ["{{base_url}}"],
+							"path": ["api", "notifications", "unread-count"]
+						}
+					}
+				},
+				{
+					"name": "Mark Notification as Read",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{student_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/notifications/:notificationId/read",
+							"host": ["{{base_url}}"],
+							"path": ["api", "notifications", ":notificationId", "read"],
+							"variable": [
+								{
+									"key": "notificationId",
+									"value": "NOTIFICATION_ID_HERE"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Mark All as Read",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{student_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/notifications/mark-all-read",
+							"host": ["{{base_url}}"],
+							"path": ["api", "notifications", "mark-all-read"]
+						}
+					}
+				},
+				{
+					"name": "Delete Notification",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{student_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/notifications/:notificationId",
+							"host": ["{{base_url}}"],
+							"path": ["api", "notifications", ":notificationId"],
+							"variable": [
+								{
+									"key": "notificationId",
+									"value": "NOTIFICATION_ID_HERE"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "[ADMIN] Create General Notification",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{admin_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"title\": \"📢 Thông báo bảo trì hệ thống\",\n  \"message\": \"Hệ thống sẽ bảo trì vào 2:00 AM ngày mai. Vui lòng hoàn thành các giao dịch trước thời gian này.\",\n  \"priority\": \"high\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/notifications/general",
+							"host": ["{{base_url}}"],
+							"path": ["api", "notifications", "general"]
+						}
+					}
+				},
+				{
+					"name": "[ADMIN] Trigger Reminders",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{admin_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/notifications/trigger-reminders",
+							"host": ["{{base_url}}"],
+							"path": ["api", "notifications", "trigger-reminders"]
+						}
+					}
+				},
+				{
+					"name": "[ADMIN] Get Notification Stats",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{admin_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/notifications/stats",
+							"host": ["{{base_url}}"],
+							"path": ["api", "notifications", "stats"]
+						}
+					}
+				}
+			]
 		}
 	],
 	"variable": [
