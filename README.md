@@ -1,25 +1,35 @@
-# 🏫 Equipment Management Backend
+ # 🏫 Equipment Management Backend
 
-Backend API cho Hệ thống Quản lý Mượn Thiết bị Trường học.
+Backend API cho Hệ thống Quản lý Mượn Thiết bị Trường học - **HOÀN THÀNH**
 
-## 📋 Tính năng
+## ✅ Tính năng Đã Hoàn Thành
 
 ### 👨‍🎓 Dành cho Sinh viên:
-- ✅ Đăng ký, đăng nhập tài khoản
-- ✅ Xem danh sách thiết bị có sẵn
-- 🔄 Gửi yêu cầu mượn thiết bị
-- 🔄 Xem lịch sử mượn thiết bị của bản thân
-- 🔄 Nhận thông báo qua email
+- ✅ **Authentication hoàn chỉnh** - Đăng ký, đăng nhập, quản lý profile
+- ✅ **Xem thiết bị** - Danh sách, tìm kiếm, filter thiết bị có sẵn
+- ✅ **Quản lý yêu cầu mượn** - Tạo, xem lịch sử yêu cầu với borrow limits
+- ✅ **Hệ thống thông báo** - Nhận thông báo trong app như Facebook
+- ✅ **Theo dõi trạng thái** - Pending, approved, borrowed, returned, rejected
+- ✅ **Borrow restrictions** - Giới hạn mượn, xử lý vi phạm quá hạn
 
 ### 👨‍💼 Dành cho Admin:
-- ✅ Quản lý danh sách thiết bị (CRUD)
-- ✅ Xem thống kê thiết bị
-- 🔄 Quản lý yêu cầu mượn (duyệt/từ chối)
-- 🔄 Ghi nhận mượn/trả thiết bị
-- 🔄 Quản lý người dùng
-- 🔄 Gửi thông báo tự động
+- ✅ **Quản lý thiết bị hoàn chỉnh** - CRUD, thống kê, search & filter
+- ✅ **Quản lý yêu cầu mượn** - Duyệt, từ chối, cho mượn, nhận trả
+- ✅ **Quản lý người dùng** - Xem, cập nhật giới hạn, thêm/bỏ restrictions
+- ✅ **Hệ thống thông báo** - Gửi thông báo chung, trigger warnings
+- ✅ **Statistics & Analytics** - 6 APIs thống kê chi tiết
+- ✅ **Tự động hóa** - Cron jobs cho nhắc nhở hạn trả
+- ✅ **Borrow limit management** - Kiểm soát giới hạn mượn intelligent
 
-**Chú thích:** ✅ Đã hoàn thành | 🔄 Đang phát triển
+### 🔧 Tính năng Kỹ thuật:
+- ✅ **JWT Authentication** - Secure token-based auth
+- ✅ **Role-based Authorization** - Admin/Student permissions
+- ✅ **Data Validation** - Comprehensive input validation
+- ✅ **Error Handling** - Structured error responses
+- ✅ **Security Features** - Rate limiting, CORS, helmet
+- ✅ **Database Relations** - Optimized MongoDB schemas
+- ✅ **Notification System** - In-app notifications with full CRUD
+- ✅ **Cron Jobs** - Automated daily reminder system
 
 ## 🚀 Cài đặt
 
@@ -48,20 +58,9 @@ MONGODB_URI=mongodb://localhost:27017/equipment_management
 JWT_SECRET=your_super_secret_jwt_key_here_change_in_production
 JWT_EXPIRE=7d
 
-# Email Configuration (Gmail example)
-EMAIL_HOST=smtp.gmail.com
-EMAIL_PORT=587
-EMAIL_SECURE=false
-EMAIL_USER=your_email@gmail.com
-EMAIL_PASS=your_app_password
-
-# Admin Configuration
-ADMIN_EMAIL=admin@equipment.com
-ADMIN_PASSWORD=admin123456
-
-# Rate Limiting
-RATE_LIMIT_WINDOW_MS=900000
-RATE_LIMIT_MAX_REQUESTS=100
+# Admin Configuration (Tự động tạo admin mặc định)
+ADMIN_EMAIL=admin@quanlythietbi.edu.vn
+ADMIN_PASSWORD=Admin123@
 ```
 
 ### Bước 3: Cài đặt MongoDB
@@ -84,39 +83,34 @@ brew install mongodb-community
 brew services start mongodb-community
 ```
 
-### Bước 4: Tạo dữ liệu mẫu
+### Bước 4: Chạy server
 ```bash
-npm run seed
-```
-
-### Bước 5: Chạy server
-```bash
-# Development mode
+# Development mode với nodemon
 npm run dev
 
 # Production mode
 npm start
 ```
 
-Server sẽ chạy tại: http://localhost:5000
+Server sẽ chạy tại: **http://localhost:5000**
 
-## 📡 API Endpoints
+## 📡 API Endpoints - HOÀN CHỈNH
 
-### 🔐 Authentication
+### 🔐 Authentication (7 APIs)
 | Method | Endpoint | Description | Access |
 |--------|----------|-------------|---------|
-| POST | `/api/auth/register` | Đăng ký tài khoản | Public |
+| POST | `/api/auth/register` | Đăng ký sinh viên | Public |
 | POST | `/api/auth/login` | Đăng nhập | Public |
 | GET | `/api/auth/profile` | Lấy profile | Private |
-| PUT | `/api/auth/profile` | Cập nhật profile | Private |
 | PUT | `/api/auth/change-password` | Đổi mật khẩu | Private |
-| POST | `/api/auth/refresh` | Gia hạn token | Private |
+| POST | `/api/auth/refresh-token` | Gia hạn token | Private |
 | POST | `/api/auth/logout` | Đăng xuất | Private |
+| POST | `/api/auth/create-admin` | Tạo admin (Admin only) | Admin |
 
-### 🛠️ Equipment Management
+### 🛠️ Equipment Management (8 APIs)
 | Method | Endpoint | Description | Access |
 |--------|----------|-------------|---------|
-| GET | `/api/equipment` | Lấy danh sách thiết bị | Public |
+| GET | `/api/equipment` | Lấy danh sách thiết bị + filter | Public |
 | GET | `/api/equipment/available` | Lấy thiết bị có sẵn | Public |
 | GET | `/api/equipment/stats` | Thống kê thiết bị | Admin |
 | GET | `/api/equipment/:id` | Lấy thiết bị theo ID | Public |
@@ -124,195 +118,264 @@ Server sẽ chạy tại: http://localhost:5000
 | PUT | `/api/equipment/:id` | Cập nhật thiết bị | Admin |
 | DELETE | `/api/equipment/:id` | Xóa thiết bị | Admin |
 
-### 📝 Request Management (Đang phát triển)
+**Search & Filter Params:**
+- `keyword` - Tìm theo tên, mã
+- `category` - electronics, laboratory, sports, furniture, vehicle
+- `condition` - excellent, good, fair, poor
+- `available` - true/false
+- `sortBy` - name, code, createdAt, availableQuantity
+- `sortOrder` - asc/desc
+
+### 📝 Borrow Request Management (8 APIs)
 | Method | Endpoint | Description | Access |
 |--------|----------|-------------|---------|
 | GET | `/api/requests` | Lấy danh sách yêu cầu | Private |
-| POST | `/api/requests` | Tạo yêu cầu mượn | Student |
-| GET | `/api/requests/:id` | Lấy chi tiết yêu cầu | Private |
-| PUT | `/api/requests/:id/approve` | Duyệt yêu cầu | Admin |
+| GET | `/api/requests/stats` | Thống kê requests | Admin |
+| POST | `/api/requests` | Tạo yêu cầu mượn (với borrow limits) | Student |
+| GET | `/api/requests/pending-overview/:userId` | Tổng quan pending của user | Admin |
+| PUT | `/api/requests/:id/approve` | Duyệt yêu cầu (auto cho mượn) | Admin |
 | PUT | `/api/requests/:id/reject` | Từ chối yêu cầu | Admin |
+| PUT | `/api/requests/:id/borrow` | Cho mượn thiết bị | Admin |
+| PUT | `/api/requests/:id/return` | Nhận trả thiết bị (xử lý overdue) | Admin |
 
-## 🧪 Test API
+### 👥 User Management (5 APIs) 
+| Method | Endpoint | Description | Access |
+|--------|----------|-------------|---------|
+| GET | `/api/users` | Lấy danh sách users + filter | Admin |
+| GET | `/api/users/:id` | Lấy chi tiết user | Admin |
+| PUT | `/api/users/:id/borrow-limit` | Cập nhật giới hạn mượn | Admin |
+| POST | `/api/users/:id/restrictions` | Thêm restriction | Admin |
+| DELETE | `/api/users/:id/restrictions` | Bỏ restrictions | Admin |
 
-### Health Check
-```bash
-curl http://localhost:5000/health
+### 📊 Statistics & Analytics (6 APIs)
+| Method | Endpoint | Description | Access |
+|--------|----------|-------------|---------|
+| GET | `/api/statistics/most-borrowed` | Thiết bị mượn nhiều nhất | Private |
+| GET | `/api/statistics/monthly-overview` | Tổng quan tháng | Private |
+| GET | `/api/statistics/current` | Thống kê hiện tại | Private |
+| GET | `/api/statistics/compare` | So sánh 2 tháng | Private |
+| POST | `/api/statistics/send-warnings` | Gửi cảnh báo thủ công | Admin |
+
+### 📱 Notifications (8 APIs)
+| Method | Endpoint | Description | Access |
+|--------|----------|-------------|---------|
+| GET | `/api/notifications` | Lấy thông báo + filter | Private |
+| GET | `/api/notifications/unread-count` | Đếm thông báo chưa đọc | Private |
+| PATCH | `/api/notifications/:id/read` | Đánh dấu đã đọc | Private |
+| PATCH | `/api/notifications/mark-all-read` | Đánh dấu tất cả đã đọc | Private |
+| DELETE | `/api/notifications/:id` | Xóa thông báo | Private |
+| POST | `/api/notifications/general` | Tạo thông báo chung | Admin |
+| POST | `/api/notifications/trigger-reminders` | Trigger nhắc nhở | Admin |
+| GET | `/api/notifications/stats` | Thống kê thông báo | Admin |
+
+**Notification Types:**
+- `request_approved` - Yêu cầu được duyệt
+- `request_rejected` - Yêu cầu bị từ chối  
+- `borrow_success` - Mượn thiết bị thành công
+- `return_reminder` - Nhắc nhở sắp hết hạn
+- `return_overdue` - Cảnh báo quá hạn
+- `return_success` - Trả thiết bị thành công
+- `general` - Thông báo chung
+
+## 🧪 Test API với Postman
+
+### Import Collection
+1. Mở Postman → Import
+2. Chọn file: `postman-collection.json`
+3. Set variables:
+   - `base_url`: `http://localhost:5000`
+   - `admin_token`: (sau khi login)
+   - `student_token`: (sau khi login)
+
+### Test Flow Hoàn chỉnh:
+1. **Health Check** - Kiểm tra server
+2. **Login Admin** - Lấy admin token
+3. **Create Equipment** - Thêm thiết bị mẫu
+4. **Register Student** - Đăng ký sinh viên
+5. **Login Student** - Lấy student token
+6. **Create Borrow Request** - Tạo yêu cầu mượn
+7. **Approve Request** - Admin duyệt
+8. **Test Notifications** - Kiểm tra thông báo
+9. **Test Statistics** - Chạy các API thống kê
+10. **Return Equipment** - Trả thiết bị
+
+### Credentials Mặc định:
+```javascript
+// Admin Account (Tự động tạo khi chạy server)
+Email: admin@quanlythietbi.edu.vn
+Password: Admin123@
+
+// Test Student (Cần đăng ký)
+Email: student@test.com
+Password: 123456
+Student ID: SV001
 ```
 
-### Đăng ký Admin
-```bash
-curl -X POST http://localhost:5000/api/auth/register \
-  -H "Content-Type: application/json" \
-  -d '{
-    "fullName": "Admin Test",
-    "email": "admin@test.com",
-    "password": "123456",
-    "role": "admin"
-  }'
-```
+## 🗄️ Database Schemas
 
-### Đăng ký Sinh viên
-```bash
-curl -X POST http://localhost:5000/api/auth/register \
-  -H "Content-Type: application/json" \
-  -d '{
-    "fullName": "Nguyễn Văn A",
-    "email": "student@test.com",
-    "password": "123456",
-    "studentId": "SV001",
-    "phone": "0123456789",
-    "faculty": "Công nghệ thông tin",
-    "class": "CNTT01"
-  }'
-```
-
-### Đăng nhập
-```bash
-curl -X POST http://localhost:5000/api/auth/login \
-  -H "Content-Type: application/json" \
-  -d '{
-    "email": "admin@test.com",
-    "password": "123456"
-  }'
-```
-
-### Lấy danh sách thiết bị
-```bash
-curl http://localhost:5000/api/equipment
-```
-
-## 🗄️ Database Models
-
-### User Schema
+### User Model
 ```javascript
 {
-  studentId: String,      // Mã sinh viên (chỉ student)
-  fullName: String,       // Họ tên
-  email: String,          // Email (unique)
-  password: String,       // Mật khẩu (hashed)
-  role: String,           // 'student' | 'admin'
-  phone: String,          // Số điện thoại
-  faculty: String,        // Khoa (chỉ student)
-  class: String,          // Lớp (chỉ student)
-  isActive: Boolean,      // Tài khoản hoạt động
-  lastLogin: Date,        // Lần đăng nhập cuối
-  createdAt: Date,
-  updatedAt: Date
+  studentId: String,           // Mã sinh viên (student only)
+  fullName: String,            // Họ tên
+  email: String,               // Email (unique)
+  password: String,            // Hashed password
+  role: String,                // 'student' | 'admin'
+  phone: String,               // Số điện thoại
+  faculty: String,             // Khoa
+  class: String,               // Lớp
+  
+  // Borrow Management
+  currentBorrowCount: Number,  // Số thiết bị đang mượn
+  borrowLimit: Number,         // Giới hạn mượn (default: 3)
+  overdueCount: Number,        // Số lần vi phạm quá hạn
+  borrowRestrictions: [{       // Các hạn chế mượn
+    type: String,              // 'overdue' | 'admin_restriction'
+    reason: String,
+    startDate: Date,
+    endDate: Date
+  }],
+  borrowHistory: [...]         // Lịch sử mượn
 }
 ```
 
-### Equipment Schema
+### Equipment Model
 ```javascript
 {
-  name: String,           // Tên thiết bị
-  code: String,           // Mã thiết bị (unique)
-  category: String,       // Loại thiết bị
-  description: String,    // Mô tả
-  specifications: String, // Thông số kỹ thuật
-  totalQuantity: Number,  // Tổng số lượng
-  availableQuantity: Number, // Số lượng có sẵn
-  borrowedQuantity: Number,  // Số lượng đang mượn
-  condition: String,      // Tình trạng
-  location: {
-    building: String,     // Tòa nhà
-    floor: String,        // Tầng
-    room: String          // Phòng
+  name: String,                // Tên thiết bị
+  code: String,                // Mã thiết bị (unique)
+  category: String,            // Loại thiết bị
+  description: String,         // Mô tả
+  specifications: String,      // Thông số kỹ thuật
+  
+  // Quantity Management
+  totalQuantity: Number,       // Tổng số lượng
+  availableQuantity: Number,   // Số lượng có sẵn
+  borrowedQuantity: Number,    // Số lượng đang được mượn
+  
+  condition: String,           // 'excellent' | 'good' | 'fair' | 'poor'
+  location: {                  // Vị trí lưu trữ
+    building: String,
+    floor: String,
+    room: String
   },
-  purchaseDate: Date,     // Ngày mua
-  purchasePrice: Number,  // Giá mua
-  warrantyExpiry: Date,   // Hết hạn bảo hành
-  images: Array,          // Hình ảnh
-  isActive: Boolean,      // Thiết bị hoạt động
-  createdBy: ObjectId,    // Người tạo
-  updatedBy: ObjectId,    // Người cập nhật
-  createdAt: Date,
-  updatedAt: Date
+  
+  // Purchase Info
+  purchaseDate: Date,          // Ngày mua
+  purchasePrice: Number,       // Giá mua
+  supplier: String,            // Nhà cung cấp
+  warrantyExpiry: Date,        // Hết hạn bảo hành
+  
+  // Status
+  isActive: Boolean,           // Trạng thái hoạt động
+  notes: String                // Ghi chú
 }
 ```
 
-## 🔧 Scripts
-
-```bash
-# Chạy development server
-npm run dev
-
-# Chạy production server
-npm start
-
-# Tạo dữ liệu mẫu
-npm run seed
-
-# Chạy tests (chưa có)
-npm test
+### BorrowRequest Model
+```javascript
+{
+  requestNumber: String,       // Mã yêu cầu (auto-gen: BR250601)
+  borrower: ObjectId,          // Người mượn
+  
+  // Equipment Details
+  equipments: [{
+    equipment: ObjectId,       // ID thiết bị
+    quantity: Number           // Số lượng mượn
+  }],
+  
+  // Dates
+  borrowDate: Date,            // Ngày mượn
+  expectedReturnDate: Date,    // Ngày trả dự kiến
+  actualReturnDate: Date,      // Ngày trả thực tế
+  
+  // Purpose & Notes
+  purpose: String,             // Mục đích sử dụng
+  notes: String,               // Ghi chú
+  
+  // Status Management
+  status: String,              // 'pending' | 'approved' | 'borrowed' | 'returned' | 'rejected'
+  
+  // Review Info
+  reviewedBy: ObjectId,        // Admin duyệt
+  reviewedAt: Date,            // Thời gian duyệt
+  reviewNotes: String,         // Ghi chú khi duyệt
+  rejectionReason: String,     // Lý do từ chối
+  
+  // Borrow/Return Info
+  borrowedBy: ObjectId,        // Admin cho mượn
+  borrowedAt: Date,            // Thời gian cho mượn
+  returnedBy: ObjectId,        // Admin nhận trả
+  returnedAt: Date             // Thời gian nhận trả
+}
 ```
 
-## 📁 Cấu trúc thư mục
-
-```
-equipment-management-backend/
-├── config/
-│   └── database.js         # Cấu hình MongoDB
-├── controllers/
-│   ├── authController.js   # Xử lý authentication
-│   └── equipmentController.js # Xử lý thiết bị
-├── middleware/
-│   ├── auth.js            # Middleware xác thực
-│   └── validation.js      # Middleware validation
-├── models/
-│   ├── User.js            # Model người dùng
-│   ├── Equipment.js       # Model thiết bị
-│   └── BorrowRequest.js   # Model yêu cầu mượn
-├── routes/
-│   ├── auth.js            # Routes authentication
-│   ├── equipment.js       # Routes thiết bị
-│   ├── requests.js        # Routes yêu cầu (coming soon)
-│   ├── users.js           # Routes users (coming soon)
-│   └── admin.js           # Routes admin (coming soon)
-├── utils/
-│   ├── jwt.js             # JWT utilities
-│   └── seed.js            # Script tạo dữ liệu mẫu
-├── .env                   # Biến môi trường
-├── server.js              # File server chính
-└── package.json           # Dependencies
+### Notification Model
+```javascript
+{
+  userId: ObjectId,            // Người nhận
+  type: String,                // Loại thông báo
+  title: String,               // Tiêu đề
+  message: String,             // Nội dung
+  priority: String,            // 'low' | 'medium' | 'high'
+  isRead: Boolean,             // Đã đọc chưa
+  
+  // Optional References
+  relatedRequest: ObjectId,    // Yêu cầu liên quan
+  relatedEquipment: ObjectId,  // Thiết bị liên quan
+  
+  createdAt: Date
+}
 ```
 
-## 🚀 Deployment
+## 🔄 Automated Features
 
-### Với PM2
-```bash
-npm install -g pm2
-pm2 start server.js --name "equipment-api"
-pm2 save
-pm2 startup
+### Cron Jobs (Chạy tự động)
+```javascript
+// Hàng ngày lúc 9:00 AM
+'0 9 * * *' → Kiểm tra và gửi nhắc nhở hạn trả
+
+// Mỗi giờ
+'0 * * * *' → Dọn dẹp tokens hết hạn
 ```
 
-### Với Docker
-```dockerfile
-# Dockerfile
-FROM node:16-alpine
-WORKDIR /app
-COPY package*.json ./
-RUN npm install --production
-COPY . .
-EXPOSE 5000
-CMD ["npm", "start"]
-```
+### Borrow Limit System
+- **Default limit:** 3 thiết bị/sinh viên
+- **Intelligent checking:** Bao gồm cả pending requests
+- **Overdue penalties:** Tự động hạn chế khi trả muộn
+- **Admin override:** Admin có thể điều chỉnh giới hạn
 
-## 🤝 Contributing
+### Notification Triggers
+- **Auto:** Duyệt/từ chối yêu cầu → Thông báo
+- **Auto:** Trả thiết bị → Thông báo
+- **Scheduled:** Sắp hết hạn → Nhắc nhở
+- **Scheduled:** Quá hạn → Cảnh báo
+- **Manual:** Admin trigger warnings
 
-1. Fork dự án
-2. Tạo feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to branch (`git push origin feature/AmazingFeature`)
-5. Mở Pull Request
+## 🎯 Production Ready
 
-## 📄 License
+### Security Features
+- ✅ JWT Token Authentication
+- ✅ Password Hashing (bcrypt)
+- ✅ Rate Limiting
+- ✅ CORS Configuration
+- ✅ Input Validation & Sanitization
+- ✅ Error Handling & Logging
+- ✅ Request Size Limiting
 
-Dự án này sử dụng MIT License - xem file [LICENSE](LICENSE) để biết thêm chi tiết.
+### Performance Optimizations
+- ✅ Database Indexing
+- ✅ Pagination for List APIs
+- ✅ Efficient MongoDB Queries
+- ✅ Response Compression
+- ✅ Caching Headers
 
-## 📞 Contact
+### Monitoring & Logging
+- ✅ Request/Response Logging
+- ✅ Error Tracking
+- ✅ Performance Monitoring
+- ✅ Health Check Endpoint
 
-- **Author**: Equipment Management Team
-- **Email**: admin@equipment.com
-- **Project Link**: [https://github.com/yourorg/equipment-management-backend](https://github.com/yourorg/equipment-management-backend) 
+## 📞 Support
+
+**Developed with ❤️ for Equipment Management System**
