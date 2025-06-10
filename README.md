@@ -299,20 +299,3 @@ EXPOSE 5000
 CMD ["npm", "start"]
 ```
 
-## 🤝 Contributing
-
-1. Fork dự án
-2. Tạo feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to branch (`git push origin feature/AmazingFeature`)
-5. Mở Pull Request
-
-## 📄 License
-
-Dự án này sử dụng MIT License - xem file [LICENSE](LICENSE) để biết thêm chi tiết.
-
-## 📞 Contact
-
-- **Author**: Equipment Management Team
-- **Email**: admin@equipment.com
-- **Project Link**: [https://github.com/yourorg/equipment-management-backend](https://github.com/yourorg/equipment-management-backend) 
