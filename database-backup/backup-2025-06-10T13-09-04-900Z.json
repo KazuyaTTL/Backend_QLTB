@@ -1,0 +1,528 @@
+{
+  "timestamp": "2025-06-10T13:09:05.210Z",
+  "database": "equipment-management",
+  "collections": {
+    "equipment": [
+      {
+        "_id": "6843944e753d73ae670cbdb0",
+        "name": "Laptop Dell Inspiron 15",
+        "code": "LAPTOP001",
+        "category": "electronics",
+        "description": "Laptop phục vụ học tập và nghiên cứu",
+        "specifications": "CPU: Intel i5, RAM: 8GB, Storage: 256GB SSD",
+        "totalQuantity": 10,
+        "availableQuantity": 10,
+        "borrowedQuantity": 0,
+        "condition": "good",
+        "location": {
+          "building": "A",
+          "floor": "2",
+          "room": "A201"
+        },
+        "purchaseDate": "2023-01-15T00:00:00.000Z",
+        "purchasePrice": 15000000,
+        "warrantyExpiry": "2026-01-15T00:00:00.000Z",
+        "isActive": true,
+        "createdBy": "68430a9ef7e4436f77d386da",
+        "images": [],
+        "borrowHistory": [],
+        "maintenanceHistory": [],
+        "createdAt": "2025-06-07T01:22:22.667Z",
+        "updatedAt": "2025-06-09T01:48:34.955Z",
+        "__v": 0
+      },
+      {
+        "_id": "68439739753d73ae670cbdb5",
+        "name": "Máy chiếu Epson EB-X41",
+        "code": "PROJECTOR001",
+        "category": "electronics",
+        "description": "Máy chiếu đa năng cho hội trường và lớp học",
+        "specifications": "Độ sáng: 3600 lumens, Độ phân giải: XGA, Cổng HDMI/VGA",
+        "totalQuantity": 5,
+        "availableQuantity": 5,
+        "borrowedQuantity": 0,
+        "condition": "good",
+        "location": {
+          "building": "B",
+          "floor": "1",
+          "room": "B105"
+        },
+        "purchaseDate": "2022-08-10T00:00:00.000Z",
+        "purchasePrice": 12000000,
+        "warrantyExpiry": "2025-08-10T00:00:00.000Z",
+        "isActive": true,
+        "createdBy": "68430a9ef7e4436f77d386da",
+        "images": [],
+        "borrowHistory": [],
+        "maintenanceHistory": [],
+        "createdAt": "2025-06-07T01:34:49.221Z",
+        "updatedAt": "2025-06-10T08:50:47.519Z",
+        "__v": 0
+      },
+      {
+        "_id": "6843974b753d73ae670cbdba",
+        "name": "Bàn bóng bàn Double Fish",
+        "code": "TABLETENNIS001",
+        "category": "sports",
+        "description": "Bàn bóng bàn tiêu chuẩn thi đấu",
+        "specifications": "Kích thước: 274x152.5x76 cm, Chất liệu: MDF cao cấp",
+        "totalQuantity": 2,
+        "availableQuantity": 2,
+        "borrowedQuantity": 0,
+        "condition": "good",
+        "location": {
+          "building": "C",
+          "floor": "3",
+          "room": "C301"
+        },
+        "purchaseDate": "2021-05-01T00:00:00.000Z",
+        "purchasePrice": 7000000,
+        "warrantyExpiry": "2024-05-01T00:00:00.000Z",
+        "isActive": true,
+        "createdBy": "68430a9ef7e4436f77d386da",
+        "images": [],
+        "borrowHistory": [],
+        "maintenanceHistory": [],
+        "createdAt": "2025-06-07T01:35:07.638Z",
+        "updatedAt": "2025-06-07T01:35:07.640Z",
+        "__v": 0
+      },
+      {
+        "_id": "68439756753d73ae670cbdbf",
+        "name": "Loa kéo di động JBL",
+        "code": "SPEAKER001",
+        "category": "audio_visual",
+        "description": "Loa di động phục vụ sự kiện ngoài trời",
+        "specifications": "Công suất: 300W, Bluetooth, Kèm micro không dây",
+        "totalQuantity": 3,
+        "availableQuantity": 3,
+        "borrowedQuantity": 0,
+        "condition": "good",
+        "location": {
+          "building": "A",
+          "floor": "1",
+          "room": "A102"
+        },
+        "purchaseDate": "2023-09-20T00:00:00.000Z",
+        "purchasePrice": 3500000,
+        "warrantyExpiry": "2026-09-20T00:00:00.000Z",
+        "isActive": true,
+        "createdBy": "68430a9ef7e4436f77d386da",
+        "images": [],
+        "borrowHistory": [],
+        "maintenanceHistory": [],
+        "createdAt": "2025-06-07T01:35:18.673Z",
+        "updatedAt": "2025-06-07T14:25:01.726Z",
+        "__v": 0
+      },
+      {
+        "_id": "6843975e753d73ae670cbdc4",
+        "name": "Laptop Dell Inspiron 17 - Updated",
+        "code": "LABKIT001",
+        "category": "laboratory",
+        "description": "Bộ hóa chất và dụng cụ cho phòng thí nghiệm hóa học",
+        "specifications": "Gồm 10 loại hóa chất, kèm cốc đo, ống nghiệm, pipet",
+        "totalQuantity": 8,
+        "availableQuantity": 6,
+        "borrowedQuantity": 2,
+        "condition": "new",
+        "location": {
+          "building": "D",
+          "floor": "2",
+          "room": "D205"
+        },
+        "purchaseDate": "2024-03-10T00:00:00.000Z",
+        "purchasePrice": 4000000,
+        "warrantyExpiry": "2027-03-10T00:00:00.000Z",
+        "isActive": true,
+        "createdBy": "68430a9ef7e4436f77d386da",
+        "images": [],
+        "borrowHistory": [],
+        "maintenanceHistory": [],
+        "createdAt": "2025-06-07T01:35:26.418Z",
+        "updatedAt": "2025-06-10T09:12:13.278Z",
+        "__v": 0,
+        "updatedBy": "68430a9ef7e4436f77d386da"
+      },
+      {
+        "_id": "6846a4f53d2d27f15f6861a9",
+        "name": "Cáp HDMI",
+        "code": "GHJGHJG",
+        "category": "electronics",
+        "totalQuantity": 1,
+        "availableQuantity": 1,
+        "borrowedQuantity": 0,
+        "condition": "good",
+        "location": {
+          "building": "A2",
+          "floor": "4",
+          "room": "407"
+        },
+        "isActive": false,
+        "createdBy": "68430a9ef7e4436f77d386da",
+        "images": [],
+        "borrowHistory": [],
+        "maintenanceHistory": [],
+        "createdAt": "2025-06-09T09:10:13.326Z",
+        "updatedAt": "2025-06-09T09:10:13.331Z",
+        "__v": 0,
+        "updatedBy": "68430a9ef7e4436f77d386da"
+      }
+    ],
+    "notifications": [
+      {
+        "_id": "6847088e12152321c2760a03",
+        "recipient": "68438eb3753d73ae670cbd9b",
+        "title": "📢 Thông báo bảo trì hệ thống",
+        "message": "Hệ thống sẽ bảo trì vào 2:00 AM ngày mai. Vui lòng hoàn thành các giao dịch trước thời gian này.",
+        "type": "general",
+        "priority": "high",
+        "isRead": false,
+        "expiresAt": "2025-07-09T16:15:10.085Z",
+        "createdAt": "2025-06-09T16:15:10.085Z",
+        "updatedAt": "2025-06-09T16:15:10.085Z",
+        "__v": 0
+      },
+      {
+        "_id": "6847088e12152321c2760a04",
+        "recipient": "6843b06a4a801b3765a6e7c2",
+        "title": "📢 Thông báo bảo trì hệ thống",
+        "message": "Hệ thống sẽ bảo trì vào 2:00 AM ngày mai. Vui lòng hoàn thành các giao dịch trước thời gian này.",
+        "type": "general",
+        "priority": "high",
+        "isRead": false,
+        "expiresAt": "2025-07-09T16:15:10.086Z",
+        "createdAt": "2025-06-09T16:15:10.086Z",
+        "updatedAt": "2025-06-09T16:15:10.086Z",
+        "__v": 0
+      },
+      {
+        "_id": "6847f1b878599f0181113bed",
+        "recipient": "68438eb3753d73ae670cbd9b",
+        "title": "📦 Đã nhận thiết bị thành công",
+        "message": "Bạn đã nhận \"Laptop Dell Inspiron 17 - Updated\" thành công. Vui lòng trả đúng hạn vào ngày 2/7/2025.",
+        "type": "borrow_success",
+        "priority": "normal",
+        "relatedRequest": "6846fd9a12152321c276099d",
+        "relatedEquipment": "6843975e753d73ae670cbdc4",
+        "isRead": false,
+        "data": {
+          "equipmentName": "Laptop Dell Inspiron 17 - Updated",
+          "dueDate": "2025-07-02T00:00:00.000Z"
+        },
+        "expiresAt": "2025-07-10T08:50:00.314Z",
+        "createdAt": "2025-06-10T08:50:00.314Z",
+        "updatedAt": "2025-06-10T08:50:00.315Z",
+        "__v": 0
+      },
+      {
+        "_id": "6847f6ed78599f0181113e09",
+        "recipient": "68438eb3753d73ae670cbd9b",
+        "title": "📦 Đã nhận thiết bị thành công",
+        "message": "Bạn đã nhận \"Laptop Dell Inspiron 17 - Updated\" thành công. Vui lòng trả đúng hạn vào ngày 17/7/2025.",
+        "type": "borrow_success",
+        "priority": "normal",
+        "relatedRequest": "6847f6c678599f0181113db4",
+        "relatedEquipment": "6843975e753d73ae670cbdc4",
+        "isRead": false,
+        "data": {
+          "equipmentName": "Laptop Dell Inspiron 17 - Updated",
+          "dueDate": "2025-07-17T00:00:00.000Z"
+        },
+        "expiresAt": "2025-07-10T09:12:13.377Z",
+        "createdAt": "2025-06-10T09:12:13.377Z",
+        "updatedAt": "2025-06-10T09:12:13.399Z",
+        "__v": 0
+      }
+    ],
+    "users": [
+      {
+        "_id": "68430a9ef7e4436f77d386da",
+        "fullName": "Quản trị viên hệ thống",
+        "email": "admin@quanlythietbi.edu.vn",
+        "password": "$2a$12$IG57aGKlmcCDyvI/XVA.8eJLGdghfexfXlb5v8aoabnbg.hjeIJ1O",
+        "role": "admin",
+        "isActive": true,
+        "createdAt": "2025-06-06T15:34:54.155Z",
+        "updatedAt": "2025-06-10T09:12:01.723Z",
+        "__v": 1,
+        "lastLogin": "2025-06-10T09:12:01.715Z",
+        "borrowHistory": [],
+        "borrowLimit": 3,
+        "borrowRestrictions": [],
+        "currentBorrowCount": 0,
+        "isRestricted": false,
+        "overdueCount": 0
+      },
+      {
+        "_id": "68438eb3753d73ae670cbd9b",
+        "studentId": "SV001",
+        "fullName": "Nguyễn Văn A",
+        "email": "student@test.com",
+        "password": "$2a$12$ScpTWn2TfEGkc9wSHbD37e8PNk5ghBUBsSKGBuOs5/LmaAY0wzp/S",
+        "role": "student",
+        "phone": "0123456789",
+        "faculty": "Công nghệ thông tin",
+        "class": "CNTT01",
+        "isActive": true,
+        "createdAt": "2025-06-07T00:58:27.139Z",
+        "updatedAt": "2025-06-10T11:36:58.737Z",
+        "__v": 6,
+        "lastLogin": "2025-06-10T11:36:58.717Z",
+        "borrowHistory": [
+          {
+            "requestId": "6846389a3d2d27f15f685fa7",
+            "action": "borrowed",
+            "date": "2025-06-09T04:08:45.901Z",
+            "equipmentCount": 1,
+            "_id": "68465e4d3d2d27f15f68602a"
+          },
+          {
+            "requestId": "6846fd9a12152321c276099d",
+            "action": "borrowed",
+            "date": "2025-06-10T08:50:00.065Z",
+            "equipmentCount": 1,
+            "_id": "6847f1b878599f0181113be7"
+          },
+          {
+            "requestId": "6846389a3d2d27f15f685fa7",
+            "action": "returned",
+            "date": "2025-06-10T08:50:47.527Z",
+            "equipmentCount": 1,
+            "_id": "6847f1e778599f0181113c05"
+          },
+          {
+            "requestId": "6846fd9a12152321c276099d",
+            "action": "returned",
+            "date": "2025-06-10T08:53:26.890Z",
+            "equipmentCount": 1,
+            "_id": "6847f28678599f0181113c7a"
+          },
+          {
+            "requestId": "6847f6c678599f0181113db4",
+            "action": "borrowed",
+            "date": "2025-06-10T09:12:13.301Z",
+            "equipmentCount": 2,
+            "_id": "6847f6ed78599f0181113e03"
+          }
+        ],
+        "borrowLimit": 3,
+        "borrowRestrictions": [],
+        "currentBorrowCount": 2,
+        "isRestricted": false,
+        "overdueCount": 0
+      },
+      {
+        "_id": "6843938e753d73ae670cbda9",
+        "fullName": "Admin Mới",
+        "email": "admin@test.edu.vn",
+        "password": "$2a$12$Rsn9HbcmF3DS.kDoWD8E2OePQW1GbTXeNndZKtLpElaqFiRpb.2Q2",
+        "role": "admin",
+        "isActive": true,
+        "createdAt": "2025-06-07T01:19:10.640Z",
+        "updatedAt": "2025-06-07T01:19:11.104Z",
+        "__v": 0
+      },
+      {
+        "_id": "6843b06a4a801b3765a6e7c2",
+        "studentId": "SV002",
+        "fullName": "Lê Văn B",
+        "email": "studentb@test.com",
+        "password": "$2a$12$8SISNmzpLC9uXO4WBGi.puEOE3FAFxewEn3GMuNh2cKeqGI8AxeQ.",
+        "role": "student",
+        "phone": "1023456789",
+        "faculty": "Công nghệ thông tin",
+        "class": "CNTT02",
+        "isActive": true,
+        "createdAt": "2025-06-07T03:22:18.110Z",
+        "updatedAt": "2025-06-09T01:48:34.966Z",
+        "__v": 3,
+        "lastLogin": "2025-06-08T18:11:17.744Z",
+        "borrowHistory": [
+          {
+            "requestId": "684637bd3d2d27f15f685f87",
+            "action": "borrowed",
+            "date": "2025-06-09T01:37:42.774Z",
+            "equipmentCount": 3,
+            "_id": "68463ae63d2d27f15f685fd0"
+          },
+          {
+            "requestId": "684637bd3d2d27f15f685f87",
+            "action": "returned",
+            "date": "2025-06-09T01:48:34.964Z",
+            "equipmentCount": 3,
+            "_id": "68463d723d2d27f15f685fe7"
+          }
+        ],
+        "borrowLimit": 3,
+        "borrowRestrictions": [],
+        "currentBorrowCount": 0,
+        "isRestricted": false,
+        "overdueCount": 0
+      }
+    ],
+    "borrowrequests": [
+      {
+        "_id": "684637bd3d2d27f15f685f87",
+        "requestNumber": "BR25060001",
+        "borrower": "6843b06a4a801b3765a6e7c2",
+        "equipments": [
+          {
+            "equipment": "6843944e753d73ae670cbdb0",
+            "quantity": 3,
+            "actualReturnQuantity": 0,
+            "_id": "684637bd3d2d27f15f685f88"
+          }
+        ],
+        "borrowDate": "2025-06-09T00:00:00.000Z",
+        "expectedReturnDate": "2025-06-19T00:00:00.000Z",
+        "purpose": "Sử dụng cho dự án nhóm môn Lập trình web. Cần laptop để code và demo sản phẩm.",
+        "notes": "Sinh viên cam kết sử dụng cẩn thận và trả đúng hạn.\n--- Ghi chú khi trả ---\nThiết bị được trả trong tình trạng tốt. Không có hư hỏng.",
+        "status": "returned",
+        "priority": "normal",
+        "isOverdue": false,
+        "overdueNotificationSent": false,
+        "remindersSent": [],
+        "damages": [],
+        "attachments": [],
+        "createdAt": "2025-06-09T01:24:13.836Z",
+        "updatedAt": "2025-06-09T01:48:34.972Z",
+        "__v": 0,
+        "borrowedAt": "2025-06-09T01:37:42.796Z",
+        "borrowedBy": "68430a9ef7e4436f77d386da",
+        "reviewNotes": "Yêu cầu được duyệt. Sinh viên có thể đến nhận thiết bị tại phòng A201.",
+        "reviewedAt": "2025-06-09T01:37:42.796Z",
+        "reviewedBy": "68430a9ef7e4436f77d386da",
+        "actualReturnDate": "2025-06-09T01:48:34.969Z",
+        "returnedAt": "2025-06-09T01:48:34.969Z",
+        "returnedBy": "68430a9ef7e4436f77d386da"
+      },
+      {
+        "_id": "684638613d2d27f15f685f95",
+        "requestNumber": "BR25060002",
+        "borrower": "68438eb3753d73ae670cbd9b",
+        "equipments": [
+          {
+            "equipment": "6843944e753d73ae670cbdb0",
+            "quantity": 2,
+            "actualReturnQuantity": 0,
+            "_id": "684638613d2d27f15f685f96"
+          }
+        ],
+        "borrowDate": "2025-06-09T00:00:00.000Z",
+        "expectedReturnDate": "2025-06-19T00:00:00.000Z",
+        "purpose": "Sử dụng cho dự án nhóm môn Lập trình web. Cần laptop.",
+        "notes": "Sinh viên cam kết sử dụng cẩn thận và trả đúng hạn.",
+        "status": "rejected",
+        "priority": "normal",
+        "isOverdue": false,
+        "overdueNotificationSent": false,
+        "remindersSent": [],
+        "damages": [],
+        "attachments": [],
+        "createdAt": "2025-06-09T01:26:57.839Z",
+        "updatedAt": "2025-06-09T04:09:03.560Z",
+        "__v": 0,
+        "rejectionReason": "Hết rồi",
+        "reviewedAt": "2025-06-09T04:09:03.551Z",
+        "reviewedBy": "68430a9ef7e4436f77d386da"
+      },
+      {
+        "_id": "6846389a3d2d27f15f685fa7",
+        "requestNumber": "BR25060003",
+        "borrower": "68438eb3753d73ae670cbd9b",
+        "equipments": [
+          {
+            "equipment": "68439739753d73ae670cbdb5",
+            "quantity": 1,
+            "actualReturnQuantity": 0,
+            "_id": "6846389a3d2d27f15f685fa8"
+          }
+        ],
+        "borrowDate": "2025-06-09T00:00:00.000Z",
+        "expectedReturnDate": "2025-06-19T00:00:00.000Z",
+        "purpose": "Sử dụng cho bảo vệ bài tập lớn. Cần máy chiếu để thuyết trình.",
+        "notes": "Sinh viên cam kết sử dụng cẩn thận và trả đúng hạn.",
+        "status": "borrowed",
+        "priority": "normal",
+        "isOverdue": false,
+        "overdueNotificationSent": false,
+        "remindersSent": [],
+        "damages": [],
+        "attachments": [],
+        "createdAt": "2025-06-09T01:27:54.985Z",
+        "updatedAt": "2025-06-09T04:08:45.912Z",
+        "__v": 0,
+        "borrowedAt": "2025-06-09T04:08:45.907Z",
+        "borrowedBy": "68430a9ef7e4436f77d386da",
+        "reviewNotes": "",
+        "reviewedAt": "2025-06-09T04:08:45.906Z",
+        "reviewedBy": "68430a9ef7e4436f77d386da"
+      },
+      {
+        "_id": "6846fd9a12152321c276099d",
+        "requestNumber": "BR25060004",
+        "borrower": "68438eb3753d73ae670cbd9b",
+        "equipments": [
+          {
+            "equipment": "6843975e753d73ae670cbdc4",
+            "quantity": 1,
+            "actualReturnQuantity": 0,
+            "_id": "6846fd9a12152321c276099e"
+          }
+        ],
+        "borrowDate": "2025-07-01T00:00:00.000Z",
+        "expectedReturnDate": "2025-07-02T00:00:00.000Z",
+        "purpose": "111111111111111111111111111",
+        "notes": "",
+        "status": "borrowed",
+        "priority": "normal",
+        "isOverdue": false,
+        "overdueNotificationSent": false,
+        "remindersSent": [],
+        "damages": [],
+        "attachments": [],
+        "createdAt": "2025-06-09T15:28:26.690Z",
+        "updatedAt": "2025-06-10T08:50:00.096Z",
+        "__v": 0,
+        "borrowedAt": "2025-06-10T08:50:00.092Z",
+        "borrowedBy": "68430a9ef7e4436f77d386da",
+        "reviewNotes": "",
+        "reviewedAt": "2025-06-10T08:50:00.091Z",
+        "reviewedBy": "68430a9ef7e4436f77d386da"
+      },
+      {
+        "_id": "6847f6c678599f0181113db4",
+        "requestNumber": "BR25060005",
+        "borrower": "68438eb3753d73ae670cbd9b",
+        "equipments": [
+          {
+            "equipment": "6843975e753d73ae670cbdc4",
+            "quantity": 2,
+            "actualReturnQuantity": 0,
+            "_id": "6847f6c678599f0181113db5"
+          }
+        ],
+        "borrowDate": "2025-06-14T00:00:00.000Z",
+        "expectedReturnDate": "2025-07-17T00:00:00.000Z",
+        "purpose": "111111111111111111111111",
+        "notes": "",
+        "status": "borrowed",
+        "priority": "normal",
+        "isOverdue": false,
+        "overdueNotificationSent": false,
+        "remindersSent": [],
+        "damages": [],
+        "attachments": [],
+        "createdAt": "2025-06-10T09:11:34.217Z",
+        "updatedAt": "2025-06-10T09:12:13.324Z",
+        "__v": 0,
+        "borrowedAt": "2025-06-10T09:12:13.322Z",
+        "borrowedBy": "68430a9ef7e4436f77d386da",
+        "reviewNotes": "",
+        "reviewedAt": "2025-06-10T09:12:13.322Z",
+        "reviewedBy": "68430a9ef7e4436f77d386da"
+      }
+    ]
+  }
+}
