@@ -1,25 +1,25 @@
 # 🏫 Equipment Management Backend
+# TẠ TIẾN LỘC - B23DCCC100
 
 Backend API cho Hệ thống Quản lý Mượn Thiết bị Trường học.
 
 ## 📋 Tính năng
 
 ### 👨‍🎓 Dành cho Sinh viên:
-- ✅ Đăng ký, đăng nhập tài khoản
-- ✅ Xem danh sách thiết bị có sẵn
-- 🔄 Gửi yêu cầu mượn thiết bị
-- 🔄 Xem lịch sử mượn thiết bị của bản thân
-- 🔄 Nhận thông báo qua email
+-  Đăng ký, đăng nhập tài khoản
+-  Xem danh sách thiết bị có sẵn
+-  Gửi yêu cầu mượn thiết bị
+-  Xem lịch sử mượn thiết bị của bản thân
+-  Nhận thông báo qua email
 
 ### 👨‍💼 Dành cho Admin:
-- ✅ Quản lý danh sách thiết bị (CRUD)
-- ✅ Xem thống kê thiết bị
-- 🔄 Quản lý yêu cầu mượn (duyệt/từ chối)
-- 🔄 Ghi nhận mượn/trả thiết bị
-- 🔄 Quản lý người dùng
-- 🔄 Gửi thông báo tự động
+-  Quản lý danh sách thiết bị (CRUD)
+-  Xem thống kê thiết bị
+-  Quản lý yêu cầu mượn (duyệt/từ chối)
+-  Ghi nhận mượn/trả thiết bị
+-  Quản lý người dùng
+-  Gửi thông báo tự động
 
-**Chú thích:** ✅ Đã hoàn thành | 🔄 Đang phát triển
 
 ## 🚀 Cài đặt
 
