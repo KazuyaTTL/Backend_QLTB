@@ -311,8 +311,3 @@ CMD ["npm", "start"]
 
 Dự án này sử dụng MIT License - xem file [LICENSE](LICENSE) để biết thêm chi tiết.
 
-##  Contact
-
-- **Author**: Equipment Management Team
-- **Email**: admin@equipment.com
-- **Project Link**: [https://github.com/yourorg/equipment-management-backend](https://github.com/yourorg/equipment-management-backend) 
