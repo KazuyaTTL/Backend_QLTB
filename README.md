@@ -1,27 +1,27 @@
-# 🏫 Equipment Management Backend
+# Equipment Management Backend
 
 Backend API cho Hệ thống Quản lý Mượn Thiết bị Trường học.
 
-## 📋 Tính năng
+## Tính năng
 
-### 👨‍🎓 Dành cho Sinh viên:
-- ✅ Đăng ký, đăng nhập tài khoản
-- ✅ Xem danh sách thiết bị có sẵn
-- 🔄 Gửi yêu cầu mượn thiết bị
-- 🔄 Xem lịch sử mượn thiết bị của bản thân
-- 🔄 Nhận thông báo qua email
+### Dành cho Sinh viên:
+-  Đăng ký, đăng nhập tài khoản
+-  Xem danh sách thiết bị có sẵn
+-  Gửi yêu cầu mượn thiết bị
+-  Xem lịch sử mượn thiết bị của bản thân
+-  Nhận thông báo qua email
 
-### 👨‍💼 Dành cho Admin:
-- ✅ Quản lý danh sách thiết bị (CRUD)
-- ✅ Xem thống kê thiết bị
-- 🔄 Quản lý yêu cầu mượn (duyệt/từ chối)
-- 🔄 Ghi nhận mượn/trả thiết bị
-- 🔄 Quản lý người dùng
-- 🔄 Gửi thông báo tự động
+###  Dành cho Admin:
+-  Quản lý danh sách thiết bị (CRUD)
+-  Xem thống kê thiết bị
+-  Quản lý yêu cầu mượn (duyệt/từ chối)
+-  Ghi nhận mượn/trả thiết bị
+-  Quản lý người dùng
+-  Gửi thông báo tự động
 
-**Chú thích:** ✅ Đã hoàn thành | 🔄 Đang phát triển
 
-## 🚀 Cài đặt
+
+##  Cài đặt
 
 ### Yêu cầu hệ thống:
 - Node.js v16+ 
@@ -100,9 +100,9 @@ npm start
 
 Server sẽ chạy tại: http://localhost:5000
 
-## 📡 API Endpoints
+##  API Endpoints
 
-### 🔐 Authentication
+###  Authentication
 | Method | Endpoint | Description | Access |
 |--------|----------|-------------|---------|
 | POST | `/api/auth/register` | Đăng ký tài khoản | Public |
@@ -124,7 +124,7 @@ Server sẽ chạy tại: http://localhost:5000
 | PUT | `/api/equipment/:id` | Cập nhật thiết bị | Admin |
 | DELETE | `/api/equipment/:id` | Xóa thiết bị | Admin |
 
-### 📝 Request Management (Đang phát triển)
+###  Request Management (Đang phát triển)
 | Method | Endpoint | Description | Access |
 |--------|----------|-------------|---------|
 | GET | `/api/requests` | Lấy danh sách yêu cầu | Private |
@@ -133,7 +133,7 @@ Server sẽ chạy tại: http://localhost:5000
 | PUT | `/api/requests/:id/approve` | Duyệt yêu cầu | Admin |
 | PUT | `/api/requests/:id/reject` | Từ chối yêu cầu | Admin |
 
-## 🧪 Test API
+##  Test API
 
 ### Health Check
 ```bash
@@ -182,7 +182,7 @@ curl -X POST http://localhost:5000/api/auth/login \
 curl http://localhost:5000/api/equipment
 ```
 
-## 🗄️ Database Models
+##  Database Models
 
 ### User Schema
 ```javascript
@@ -247,7 +247,7 @@ npm run seed
 npm test
 ```
 
-## 📁 Cấu trúc thư mục
+##  Cấu trúc thư mục
 
 ```
 equipment-management-backend/
@@ -277,7 +277,7 @@ equipment-management-backend/
 └── package.json           # Dependencies
 ```
 
-## 🚀 Deployment
+##  Deployment
 
 ### Với PM2
 ```bash
@@ -299,7 +299,7 @@ EXPOSE 5000
 CMD ["npm", "start"]
 ```
 
-## 🤝 Contributing
+##  Contributing
 
 1. Fork dự án
 2. Tạo feature branch (`git checkout -b feature/AmazingFeature`)
@@ -307,11 +307,11 @@ CMD ["npm", "start"]
 4. Push to branch (`git push origin feature/AmazingFeature`)
 5. Mở Pull Request
 
-## 📄 License
+##  License
 
 Dự án này sử dụng MIT License - xem file [LICENSE](LICENSE) để biết thêm chi tiết.
 
-## 📞 Contact
+##  Contact
 
 - **Author**: Equipment Management Team
 - **Email**: admin@equipment.com
